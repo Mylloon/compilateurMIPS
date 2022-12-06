@@ -24,7 +24,7 @@ clean:
 	rm -r *.cmi $(MAIN).byte _build/
 
 archive:
-	tar czf "IC.tar.gz" *.ml Makefile $(TESTS_DIR)
+	tar czf "IC.tar.gz" *.ml *.mly *.mll Makefile $(TESTS_DIR)
 
 symlinks:
 	ln -s _build/*.cmi .
