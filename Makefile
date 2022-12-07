@@ -4,6 +4,8 @@ OUTPUT    = output
 
 TESTS     = $(wildcard $(TESTS_DIR)/*.test)
 
+INDENT    = 21
+
 main:
 	ocamlbuild -use-menhir -no-hygiene $(MAIN).byte
 
@@ -12,10 +14,10 @@ test: $(TESTS)
 	@for f in $(TESTS); do \
 		./$(MAIN).byte $$f 1> /dev/null 2> $(OUTPUT); \
 		if [ -s $(OUTPUT) ]; then \
-			printf "%s : ❌ => " $$f; \
+			printf "%$(INDENT)s : ❌ => " $$f; \
 			cat $(OUTPUT); \
 		else \
-			printf "%s : 🎉\n" $$f; \
+			printf "%$(INDENT)s : 🎉\n" $$f; \
 		fi; \
 	done; \
 	rm $(OUTPUT)
