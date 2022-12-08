@@ -9,11 +9,12 @@ exception Error of string * Lexing.position
 let errt expected given pos =
   let str_of_type_t = function
     | Int_t -> "int"
+    | Bool_t -> "bool"
   in
   raise
     (Error
        ( Printf.sprintf
-           "Expected %s but %s given."
+           "Expected %s but given %s"
            (str_of_type_t expected)
            (str_of_type_t given)
        , pos ))
@@ -31,6 +32,7 @@ let warn msg (pos : Lexing.position) =
 
 let analyze_value = function
   | Syntax.Int n -> Int n, Int_t
+  | Syntax.Bool b -> Bool b, Bool_t
 ;;
 
 let analyze_expr env ua x = function
@@ -68,6 +70,7 @@ let analyze parsed = analyze_block _types_ [] parsed
 let emit oc ast =
   let rec fmt_v = function
     | Int n -> "Int " ^ string_of_int n
+    | Bool b -> "Bool " ^ string_of_bool b
   and fmt_e = function
     | Val v -> "Val (" ^ fmt_v v ^ ")"
     | Var v -> "Var \"" ^ v ^ "\""

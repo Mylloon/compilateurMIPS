@@ -4,6 +4,7 @@
 %}
 
 %token <int> Lint
+%token <bool> Lbool
 
 %token <Ast.type_t> Ltype
 
@@ -37,6 +38,9 @@ instr:
 expr:
   | n = Lint {
     Val { value = Int (n) ; pos = $startpos(n) }
+  }
+  | b = Lbool {
+    Val { value = Bool (b) ; pos = $startpos(b) }
   }
   | v = Lvar {
     Var { name = v ; pos = $startpos(v) }

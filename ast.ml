@@ -1,8 +1,13 @@
-type type_t = Int_t
+type type_t =
+  | Int_t
+  | Bool_t
 
 module Syntax = struct
   type ident = string
-  type value = Int of int
+
+  type value =
+    | Int of int
+    | Bool of bool
 
   type expr =
     | Val of
@@ -31,7 +36,10 @@ end
 
 module IR = struct
   type ident = string
-  type value = Int of int
+
+  type value =
+    | Int of int
+    | Bool of bool
 
   type expr =
     | Val of value

@@ -10,6 +10,7 @@ type info =
 
 let compile_value = function
   | Int n -> [ Li (V0, n) ]
+  | Bool b -> [ Li (V0, if b then 1 else 0) ]
 ;;
 
 let compile_expr env = function
