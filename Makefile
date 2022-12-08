@@ -4,7 +4,7 @@ OUTPUT    = output
 
 TESTS     = $(wildcard $(TESTS_DIR)/*.test)
 
-INDENT    = 21
+INDENT    = 38
 
 main:
 	ocamlbuild -use-menhir -no-hygiene $(MAIN).byte

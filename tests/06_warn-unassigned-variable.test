@@ -1,0 +1,2 @@
+int foo;
+int bar = foo; # Warning on line 2 col 10 : unassigned variable 'foo'

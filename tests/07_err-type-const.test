@@ -1,0 +1,1 @@
+int foo = true; # Error on line 1 col 10: expected int but given bool

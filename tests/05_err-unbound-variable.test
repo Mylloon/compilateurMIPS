@@ -1,0 +1,1 @@
+int foo = bar; # Error on line 1 col 10: unbound variable 'bar'

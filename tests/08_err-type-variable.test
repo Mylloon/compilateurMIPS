@@ -1,0 +1,2 @@
+int foo = 1312;
+bool bar = foo; # Error on line 2 col 11: expected bool but given int
