@@ -32,7 +32,7 @@ instr:
     ; Assign { var = v; expr = e; pos = $startpos(v) } ]
     }
   | v = Lvar; Lassign; e = expr
-    { [ Assign { var = v; expr = e; pos = $startpos(v) } ]
+    { [ Assign { var = v; expr = e; pos = $startpos($2) } ]
     }
 
 expr:
