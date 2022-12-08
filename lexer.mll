@@ -18,4 +18,10 @@ rule token = parse
 | '='           { Lassign }
 | ';'           { Lsc }
 | ident as i    { Lvar i }
+| '#'           { comment lexbuf }
 | _ as c        { raise (Error c) }
+
+and comment = parse
+| eof  { Lend }
+| '\n' { Lexing.new_line lexbuf; token lexbuf }
+| _    { comment lexbuf }
