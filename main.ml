@@ -21,11 +21,12 @@ let () =
     let parsed = Parser.prog Lexer.token buf in
     close_in f;
     let ast = Semantics.analyze parsed in
+    (* Semantics.emit Stdlib.stderr ast; *)
     let asm = Compiler.compile ast in
     Mips.emit Stdlib.stdout asm
   with
   | Lexer.Error c ->
-    err (Printf.sprintf "unrecognized char '%c'" c) (Lexing.lexeme_start_p buf)
-  | Parser.Error -> err "syntax error" (Lexing.lexeme_start_p buf)
+    err (Printf.sprintf "Unrecognized char \"%c\"" c) (Lexing.lexeme_start_p buf)
+  | Parser.Error -> err "Syntax error" (Lexing.lexeme_start_p buf)
   | Semantics.Error (msg, pos) -> err msg pos
 ;;
