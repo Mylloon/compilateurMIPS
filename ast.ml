@@ -7,5 +7,6 @@ module Syntax = struct
 end
 
 module IR = struct
-  type expr = Int of int
+  type value = Int of int
+  type expr = Val of value
 end
