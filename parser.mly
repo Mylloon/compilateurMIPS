@@ -38,7 +38,7 @@ instr:
 
   /* type v = e */
   | t = Ltype ; v = Lvar ; Lassign ; e = expr
-    { [ Decl   { name = v ; type_t = t ; pos = $startpos(t) }
+    { [ Decl { name = v ; type_t = t ; pos = $startpos(t) }
     ; Assign { var = v ; expr = e ; pos = $startpos(v) } ]
     }
 
