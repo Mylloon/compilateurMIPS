@@ -21,6 +21,7 @@ rule token = parse
 | bool as b     { Lbool (bool_of_string b) }
 | '='           { Lassign }
 | ';'           { Lsc }
+| '+'           { Ladd}
 | ident as i    { Lvar i }
 | '#'           { comment lexbuf }
 | _ as c        { raise (Error c) }

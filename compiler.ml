@@ -15,9 +15,16 @@ let compile_value = function
   | Bool b -> [ Li (V0, if b then 1 else 0) ]
 ;;
 
-let compile_expr env = function
+let rec compile_expr env = function
   | Val v -> compile_value v
   | Var v -> [ Lw (V0, Env.find v env) ]
+  | Call (f, args) ->
+    let ca =
+      List.map
+        (fun a -> compile_expr env a @ [ Addi (SP, SP, -4); Sw (V0, Mem (SP, 0)) ])
+        args
+    in
+    List.flatten ca @ Env.find f Baselib.builtins
 ;;
 
 let compile_instr info = function
@@ -62,5 +69,5 @@ let compile_body body counter =
 
 let compile ir =
   let asm = compile_body ir 0 in
-  { text = Baselib.builtins @ asm; data = [] }
+  { text = asm; data = [] }
 ;;

@@ -1,6 +1,7 @@
 type type_t =
   | Int_t
   | Bool_t
+  | Func_t of type_t * type_t list
 
 module Syntax = struct
   type ident = string
@@ -16,6 +17,11 @@ module Syntax = struct
         }
     | Var of
         { name : ident
+        ; pos : Lexing.position
+        }
+    | Call of
+        { func : ident
+        ; args : expr list
         ; pos : Lexing.position
         }
 
@@ -48,6 +54,7 @@ module IR = struct
   type expr =
     | Val of value
     | Var of ident
+    | Call of ident * expr list
 
   type instr =
     | Decl of ident

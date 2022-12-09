@@ -7,16 +7,22 @@ open Baselib
 exception Error of string * Lexing.position
 
 let errt expected given pos =
-  let str_of_type_t = function
+  let rec string_of_type_t = function
     | Int_t -> "int"
     | Bool_t -> "bool"
+    | Func_t (r, a) ->
+      (if List.length a > 1 then "(" else "")
+      ^ String.concat ", " (List.map string_of_type_t a)
+      ^ (if List.length a > 1 then ")" else "")
+      ^ " -> "
+      ^ string_of_type_t r
   in
   raise
     (Error
        ( Printf.sprintf
            "Expected %s but given %s"
-           (str_of_type_t expected)
-           (str_of_type_t given)
+           (string_of_type_t expected)
+           (string_of_type_t given)
        , pos ))
 ;;
 
@@ -35,7 +41,7 @@ let analyze_value = function
   | Syntax.Bool b -> Bool b, Bool_t
 ;;
 
-let analyze_expr env ua t = function
+let rec analyze_expr env ua t = function
   | Syntax.Val v ->
     let v2, new_t = analyze_value v.value in
     if new_t != t then errt t new_t v.pos;
@@ -47,6 +53,29 @@ let analyze_expr env ua t = function
     let new_t = Env.find v.name env in
     if new_t != t then errt t new_t v.pos;
     Var v.name, new_t
+  | Syntax.Call c ->
+    (match Env.find c.func env with
+    | Func_t (ret_t, tl) ->
+      if ret_t != t then errt t ret_t c.pos;
+      ( Call
+          ( c.func
+          , List.map2
+              (fun t e ->
+                let e2, t2 = analyze_expr env ua t e in
+                if t2 = t
+                then e2
+                else
+                  errt
+                    t
+                    t2
+                    (match e with
+                    | Syntax.Val v -> v.pos
+                    | Syntax.Var v -> v.pos
+                    | Syntax.Call c -> c.pos))
+              tl
+              c.args )
+      , ret_t )
+    | _ -> raise (Error ("\"" ^ c.func ^ "\" isn't a function", c.pos)))
 ;;
 
 let analyze_instr env ua = function
@@ -77,6 +106,8 @@ let emit oc ast =
   and fmt_e = function
     | Val v -> "Val (" ^ fmt_v v ^ ")"
     | Var v -> "Var \"" ^ v ^ "\""
+    | Call (f, a) ->
+      "Call (\"" ^ f ^ "\", [ " ^ String.concat " ; " (List.map fmt_e a) ^ " ])"
   and fmt_i = function
     | Decl v -> "Decl \"" ^ v ^ "\""
     | Assign (v, e) -> "Assign (\"" ^ v ^ "\", " ^ fmt_e e ^ ")"

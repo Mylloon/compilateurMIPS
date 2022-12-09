@@ -1,0 +1,2 @@
+int vie = 42;
+return vie;

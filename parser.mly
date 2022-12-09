@@ -8,6 +8,9 @@
 %token <Ast.type_t> Ltype
 %token <string> Lvar
 %token Lend Lassign Lsc Lreturn
+%token Ladd
+
+%left Ladd
 
 %start prog
 
@@ -17,20 +20,20 @@
 
 prog:
   | Lend { [] }
-  | i = instr; Lsc; b = prog { i @ b }
+  | i = instr ; Lsc ; b = prog { i @ b }
 ;
 
 instr:
-  | Lreturn; e = expr { [ Return { expr = e ; pos = $startpos } ] }
-  | t = Ltype; v = Lvar {
-    [ Decl { name = v; type_t = t; pos = $startpos(t) } ]
+  | Lreturn ; e = expr { [ Return { expr = e ; pos = $startpos } ] }
+  | t = Ltype ; v = Lvar {
+    [ Decl { name = v ; type_t = t ; pos = $startpos(t) } ]
   }
-  | t = Ltype; v = Lvar; Lassign; e = expr
-    { [ Decl   { name = v; type_t = t; pos = $startpos(t) }
-    ; Assign { var = v; expr = e; pos = $startpos(v) } ]
+  | t = Ltype ; v = Lvar ; Lassign ; e = expr
+    { [ Decl   { name = v ; type_t = t ; pos = $startpos(t) }
+    ; Assign { var = v ; expr = e ; pos = $startpos(v) } ]
     }
-  | v = Lvar; Lassign; e = expr
-    { [ Assign { var = v; expr = e; pos = $startpos($2) } ]
+  | v = Lvar ; Lassign ; e = expr
+    { [ Assign { var = v ; expr = e ; pos = $startpos($2) } ]
     }
 
 expr:
@@ -42,5 +45,8 @@ expr:
   }
   | v = Lvar {
     Var { name = v ; pos = $startpos(v) }
+  }
+  | a = expr ; Ladd ; b = expr {
+    Call { func = "%add" ; args = [ a ; b ] ; pos = $startpos($2) }
   }
 ;

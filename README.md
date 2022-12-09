@@ -29,7 +29,7 @@ $ make test
 -   [x] Type `bool`
 -   [ ] Type `string`
 -   [x] Déclaration / assignation de variables
--   [ ] Librairie standard (multiplication, addition, comparateur, ...)
+-   [x] Librairie standard (multiplication, addition, comparateur, ...)
 -   [ ] Conditions
 -   [ ] Boucles
 -   [ ] Fonctions utilisateurs
