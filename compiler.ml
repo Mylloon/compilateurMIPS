@@ -6,6 +6,8 @@ type info =
   { asm : instr list
   ; env : loc Env.t
   ; fpo : int (* FP offset *)
+  ; cnt : int (* Counter *)
+  ; ret : string (* Return *)
   }
 
 let compile_value = function
@@ -25,6 +27,7 @@ let compile_instr info = function
     { info with
       asm = info.asm @ compile_expr info.env e @ [ Sw (V0, Env.find v info.env) ]
     }
+  | Return e -> { info with asm = info.asm @ compile_expr info.env e @ [ B info.ret ] }
 ;;
 
 let rec compile_block info = function
@@ -32,18 +35,32 @@ let rec compile_block info = function
   | i :: b -> compile_block (compile_instr info i) b
 ;;
 
-let compile_body body =
-  let compiled = compile_block { asm = []; env = Env.empty; fpo = 8 } body in
+let compile_body body counter =
+  let compiled =
+    compile_block
+      { asm = []
+      ; env = Env.empty
+      ; fpo = 8
+      ; cnt = counter + 1
+      ; ret = "ret" ^ string_of_int counter
+      }
+      body
+  in
   [ Addi (SP, SP, -compiled.fpo)
   ; Sw (RA, Mem (SP, compiled.fpo - 4))
   ; Sw (FP, Mem (SP, compiled.fpo - 8))
   ; Addi (FP, SP, compiled.fpo - 4)
   ]
   @ compiled.asm
-  @ [ Addi (SP, SP, compiled.fpo); Lw (RA, Mem (FP, 0)); Lw (FP, Mem (FP, -4)); Jr RA ]
+  @ [ Label compiled.ret
+    ; Addi (SP, SP, compiled.fpo)
+    ; Lw (RA, Mem (FP, 0))
+    ; Lw (FP, Mem (FP, -4))
+    ; Jr RA
+    ]
 ;;
 
 let compile ir =
-  let asm = compile_body ir in
+  let asm = compile_body ir 0 in
   { text = Baselib.builtins @ asm; data = [] }
 ;;

@@ -5,12 +5,9 @@
 
 %token <int> Lint
 %token <bool> Lbool
-
 %token <Ast.type_t> Ltype
-
 %token <string> Lvar
-
-%token Lend Lassign Lsc
+%token Lend Lassign Lsc Lreturn
 
 %start prog
 
@@ -24,6 +21,7 @@ prog:
 ;
 
 instr:
+  | Lreturn; e = expr { [ Return { expr = e ; pos = $startpos } ] }
   | t = Ltype; v = Lvar {
     [ Decl { name = v; type_t = t; pos = $startpos(t) } ]
   }

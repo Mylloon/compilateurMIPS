@@ -30,6 +30,10 @@ module Syntax = struct
         ; expr : expr
         ; pos : Lexing.position
         }
+    | Return of
+        { expr : expr
+        ; pos : Lexing.position
+        }
 
   and block = instr list
 end
@@ -48,6 +52,7 @@ module IR = struct
   type instr =
     | Decl of ident
     | Assign of ident * expr
+    | Return of expr
 
   and block = instr list
 end

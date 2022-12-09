@@ -35,18 +35,18 @@ let analyze_value = function
   | Syntax.Bool b -> Bool b, Bool_t
 ;;
 
-let analyze_expr env ua x = function
+let analyze_expr env ua t = function
   | Syntax.Val v ->
-    let v2, t = analyze_value v.value in
-    if t != x then errt x t v.pos;
-    Val v2, t
+    let v2, new_t = analyze_value v.value in
+    if new_t != t then errt t new_t v.pos;
+    Val v2, new_t
   | Syntax.Var v ->
     if not (Env.mem v.name env)
     then raise (Error ("Unbound variable \"" ^ v.name ^ "\"", v.pos));
     if List.mem v.name ua then warn ("Unassigned variable \"" ^ v.name ^ "\"") v.pos;
-    let t = Env.find v.name env in
-    if t != x then errt x t v.pos;
-    Var v.name, t
+    let new_t = Env.find v.name env in
+    if new_t != t then errt t new_t v.pos;
+    Var v.name, new_t
 ;;
 
 let analyze_instr env ua = function
@@ -56,6 +56,9 @@ let analyze_instr env ua = function
     then raise (Error ("Unbound variable \"" ^ a.var ^ "\"", a.pos));
     let ae, et = analyze_expr env ua (Env.find a.var env) a.expr in
     Assign (a.var, ae), env, List.filter (fun x -> x <> a.var) ua
+  | Syntax.Return r ->
+    let ae, _ = analyze_expr env ua Int_t r.expr in
+    Return ae, env, []
 ;;
 
 let rec analyze_block env ua = function
@@ -77,6 +80,7 @@ let emit oc ast =
   and fmt_i = function
     | Decl v -> "Decl \"" ^ v ^ "\""
     | Assign (v, e) -> "Assign (\"" ^ v ^ "\", " ^ fmt_e e ^ ")"
+    | Return e -> "Return (" ^ fmt_e e ^ ")"
   and fmt_b b = "[ " ^ String.concat "\n; " (List.map fmt_i b) ^ " ]" in
   Printf.fprintf oc "%s\n" (fmt_b ast)
 ;;
