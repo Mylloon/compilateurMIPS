@@ -20,5 +20,6 @@ let builtins =
     ; "%sub", [ Lw (T0, Mem (SP, 0)); Lw (T1, Mem (SP, 4)); Sub (V0, T0, T1) ]
     ; "%mul", [ Lw (T0, Mem (SP, 0)); Lw (T1, Mem (SP, 4)); Mul (V0, T0, T1) ]
     ; "%div", [ Lw (T0, Mem (SP, 0)); Lw (T1, Mem (SP, 4)); Div (V0, T1, T0) ]
+      (* %div: reversal of T1 and T0 ?? *)
     ]
 ;;
