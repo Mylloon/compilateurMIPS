@@ -35,3 +35,4 @@ $ make test
 -   [ ] Fonctions utilisateurs
 -   [ ] Allocation mémoire (`malloc`)
 -   [ ] Pointeurs
+-   [ ] Listes + fonctions écrites dans notre language pour gérer ses listes
