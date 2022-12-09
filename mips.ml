@@ -113,30 +113,25 @@ let fmt_loc = function
 ;;
 
 let fmt_instr = function
-  | Label _ -> ""
-  | _ as i ->
-    Printf.sprintf "  "
-    ^
-    (match i with
-    | Label l -> Printf.sprintf "%s:" l
-    | Li (r, i) -> Printf.sprintf "li %s, %d" (fmt_reg r) i
-    | La (r, a) -> Printf.sprintf "la %s, %s" (fmt_reg r) (fmt_loc a)
-    | Sw (r, a) -> Printf.sprintf "sw %s, %s" (fmt_reg r) (fmt_loc a)
-    | Lw (r, a) -> Printf.sprintf "lw %s, %s" (fmt_reg r) (fmt_loc a)
-    | Sb (r, a) -> Printf.sprintf "sb %s, %s" (fmt_reg r) (fmt_loc a)
-    | Lb (r, a) -> Printf.sprintf "lb %s, %s" (fmt_reg r) (fmt_loc a)
-    | Move (rd, rs) -> Printf.sprintf "move %s, %s" (fmt_reg rd) (fmt_reg rs)
-    | Neg (r, a) -> Printf.sprintf "neg %s, %s" (fmt_reg r) (fmt_reg a)
-    | Addi (rd, rs, i) -> Printf.sprintf "addi %s, %s, %d" (fmt_reg rd) (fmt_reg rs) i
-    | Add (rd, rs, rt) ->
-      Printf.sprintf "add %s, %s, %s" (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
-    | Mul (rd, rs, rt) ->
-      Printf.sprintf "mul %s, %s, %s" (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
-    | Syscall -> Printf.sprintf "syscall"
-    | B l -> Printf.sprintf "b %s" l
-    | Beqz (r, l) -> Printf.sprintf "beqz %s, %s" (fmt_reg r) l
-    | Jal l -> Printf.sprintf "jal %s" l
-    | Jr r -> Printf.sprintf "jr %s" (fmt_reg r))
+  | Label l -> Printf.sprintf "%s:" l
+  | Li (r, i) -> Printf.sprintf "  li %s, %d" (fmt_reg r) i
+  | La (r, a) -> Printf.sprintf "  la %s, %s" (fmt_reg r) (fmt_loc a)
+  | Sw (r, a) -> Printf.sprintf "  sw %s, %s" (fmt_reg r) (fmt_loc a)
+  | Lw (r, a) -> Printf.sprintf "  lw %s, %s" (fmt_reg r) (fmt_loc a)
+  | Sb (r, a) -> Printf.sprintf "  sb %s, %s" (fmt_reg r) (fmt_loc a)
+  | Lb (r, a) -> Printf.sprintf "  lb %s, %s" (fmt_reg r) (fmt_loc a)
+  | Move (rd, rs) -> Printf.sprintf "  move %s, %s" (fmt_reg rd) (fmt_reg rs)
+  | Neg (r, a) -> Printf.sprintf "  neg %s, %s" (fmt_reg r) (fmt_reg a)
+  | Addi (rd, rs, i) -> Printf.sprintf "  addi %s, %s, %d" (fmt_reg rd) (fmt_reg rs) i
+  | Add (rd, rs, rt) ->
+    Printf.sprintf "  add %s, %s, %s" (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
+  | Mul (rd, rs, rt) ->
+    Printf.sprintf "  mul %s, %s, %s" (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
+  | Syscall -> Printf.sprintf "  syscall"
+  | B l -> Printf.sprintf "  b %s" l
+  | Beqz (r, l) -> Printf.sprintf "  beqz %s, %s" (fmt_reg r) l
+  | Jal l -> Printf.sprintf "  jal %s" l
+  | Jr r -> Printf.sprintf "  jr %s" (fmt_reg r)
 ;;
 
 let fmt_dir = function
