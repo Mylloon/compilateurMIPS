@@ -8,9 +8,9 @@
 %token <Ast.type_t> Ltype
 %token <string> Lvar
 %token Lend Lassign Lsc Lreturn
-%token Ladd
+%token Ladd Lmul
 
-%left Ladd
+%left Ladd Lmul
 
 %start prog
 
@@ -48,5 +48,8 @@ expr:
   }
   | a = expr ; Ladd ; b = expr {
     Call { func = "%add" ; args = [ a ; b ] ; pos = $startpos($2) }
+  }
+  | a = expr ; Lmul ; b = expr {
+    Call { func = "%mul" ; args = [ a ; b ] ; pos = $startpos($2) }
   }
 ;
