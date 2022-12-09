@@ -32,9 +32,9 @@ instr:
     { [ Decl   { name = v ; type_t = t ; pos = $startpos(t) }
     ; Assign { var = v ; expr = e ; pos = $startpos(v) } ]
     }
-  | v = Lvar ; Lassign ; e = expr
-    { [ Assign { var = v ; expr = e ; pos = $startpos($2) } ]
-    }
+  | v = Lvar ; Lassign ; e = expr {
+    [ Assign { var = v ; expr = e ; pos = $startpos($2) } ]
+  }
 
 expr:
   | n = Lint {
