@@ -1,4 +1,5 @@
 type type_t =
+  | Void_t
   | Int_t
   | Bool_t
   | Func_t of type_t * type_t list
@@ -7,6 +8,7 @@ module Syntax = struct
   type ident = string
 
   type value =
+    | Void
     | Int of int
     | Bool of bool
 
@@ -48,6 +50,7 @@ module IR = struct
   type ident = string
 
   type value =
+    | Void
     | Int of int
     | Bool of bool
 

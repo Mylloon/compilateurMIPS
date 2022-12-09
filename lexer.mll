@@ -14,10 +14,11 @@ rule token = parse
 | [ ' ' '\t' ]  { token lexbuf }
 | '\n'          { Lexing.new_line lexbuf; token lexbuf }
 | num+ as n     { Lint (int_of_string n) }
+| bool as b     { Lbool (bool_of_string b) }
 | "return"      { Lreturn }
 | "int"         { Ltype (Int_t) }
 | "bool"        { Ltype (Bool_t) }
-| bool as b     { Lbool (bool_of_string b) }
+| "void"        { Ltype (Void_t) }
 | '='           { Lassign }
 | ';'           { Lsc }
 | '+'           { Ladd }

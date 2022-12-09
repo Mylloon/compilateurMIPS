@@ -11,6 +11,7 @@ type info =
   }
 
 let compile_value = function
+  | Void -> [ Li (V0, 0) ]
   | Int n -> [ Li (V0, n) ]
   | Bool b -> [ Li (V0, if b then 1 else 0) ]
 ;;

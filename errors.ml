@@ -15,6 +15,7 @@ let err msg pos =
 
 let errt expected given pos =
   let rec string_of_type_t = function
+    | Void_t -> "void"
     | Int_t -> "int"
     | Bool_t -> "bool"
     | Func_t (r, a) ->

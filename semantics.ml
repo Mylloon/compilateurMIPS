@@ -4,6 +4,7 @@ open Baselib
 open Errors
 
 let analyze_value = function
+  | Syntax.Void -> Void, Void_t
   | Syntax.Int n -> Int n, Int_t
   | Syntax.Bool b -> Bool b, Bool_t
 ;;
@@ -68,6 +69,7 @@ let analyze parsed = analyze_block _types_ [] parsed
 
 let emit oc ast =
   let rec fmt_v = function
+    | Void -> "Void"
     | Int n -> "Int " ^ string_of_int n
     | Bool b -> "Bool " ^ string_of_bool b
   and fmt_e = function
