@@ -29,8 +29,9 @@ $ make test
 -   [x] Type `bool`
 -   [ ] Type `string`
 -   [x] Déclaration / assignation de variables
--   [ ] Quelques fonctions de base (multiplication, addition, comparateur, ...)
+-   [ ] Librairie standard (multiplication, addition, comparateur, ...)
 -   [ ] Conditions
 -   [ ] Boucles
--   [ ] Fonctions
+-   [ ] Fonctions utilisateurs
+-   [ ] Allocation mémoire (`malloc`)
 -   [ ] Pointeurs
