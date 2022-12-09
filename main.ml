@@ -1,14 +1,4 @@
-open Lexing
-open Ast
-
-let err msg pos =
-  Printf.eprintf
-    "Error on line %d col %d: %s.\n"
-    pos.pos_lnum
-    (pos.pos_cnum - pos.pos_bol)
-    msg;
-  exit 1
-;;
+open Errors
 
 let () =
   if Array.length Sys.argv != 2
@@ -25,8 +15,8 @@ let () =
     let asm = Compiler.compile ast in
     Mips.emit Stdlib.stdout asm
   with
-  | Lexer.Error c ->
+  | LexerError c ->
     err (Printf.sprintf "Unrecognized char \"%c\"" c) (Lexing.lexeme_start_p buf)
   | Parser.Error -> err "Syntax error" (Lexing.lexeme_start_p buf)
-  | Semantics.Error (msg, pos) -> err msg pos
+  | SemanticsError (msg, pos) -> err msg pos
 ;;

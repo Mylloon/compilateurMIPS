@@ -1,8 +1,7 @@
 {
+  open Errors
   open Lexing
   open Parser
-
-  exception Error of char
 }
 
 let alpha = ['a'-'z' 'A'-'Z']
@@ -27,7 +26,7 @@ rule token = parse
 | '/'           { Ldiv }
 | ident as i    { Lvar i }
 | '#'           { comment lexbuf }
-| _ as c        { raise (Error c) }
+| _ as c        { raise (LexerError c) }
 
 and comment = parse
 | eof  { Lend }

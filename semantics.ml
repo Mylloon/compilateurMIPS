@@ -1,40 +1,7 @@
 open Ast
 open Ast.IR
 open Baselib
-
-(* Erreurs *)
-
-exception Error of string * Lexing.position
-
-let errt expected given pos =
-  let rec string_of_type_t = function
-    | Int_t -> "int"
-    | Bool_t -> "bool"
-    | Func_t (r, a) ->
-      (if List.length a > 1 then "(" else "")
-      ^ String.concat ", " (List.map string_of_type_t a)
-      ^ (if List.length a > 1 then ")" else "")
-      ^ " -> "
-      ^ string_of_type_t r
-  in
-  raise
-    (Error
-       ( Printf.sprintf
-           "Expected %s but given %s"
-           (string_of_type_t expected)
-           (string_of_type_t given)
-       , pos ))
-;;
-
-let warn msg (pos : Lexing.position) =
-  Printf.eprintf
-    "Warning on line %d col %d: %s.\n"
-    pos.pos_lnum
-    (pos.pos_cnum - pos.pos_bol)
-    msg
-;;
-
-(* Sémantique *)
+open Errors
 
 let analyze_value = function
   | Syntax.Int n -> Int n, Int_t
@@ -48,7 +15,7 @@ let rec analyze_expr env ua t = function
     Val v2, new_t
   | Syntax.Var v ->
     if not (Env.mem v.name env)
-    then raise (Error ("Unbound variable \"" ^ v.name ^ "\"", v.pos));
+    then raise (SemanticsError ("Unbound variable \"" ^ v.name ^ "\"", v.pos));
     if List.mem v.name ua then warn ("Unassigned variable \"" ^ v.name ^ "\"") v.pos;
     let new_t = Env.find v.name env in
     if new_t != t then errt t new_t v.pos;
@@ -75,14 +42,14 @@ let rec analyze_expr env ua t = function
               tl
               c.args )
       , ret_t )
-    | _ -> raise (Error ("\"" ^ c.func ^ "\" isn't a function", c.pos)))
+    | _ -> raise (SemanticsError ("\"" ^ c.func ^ "\" isn't a function", c.pos)))
 ;;
 
 let analyze_instr env ua = function
   | Syntax.Decl d -> Decl d.name, Env.add d.name d.type_t env, [ d.name ] @ ua
   | Syntax.Assign a ->
     if not (Env.mem a.var env)
-    then raise (Error ("Unbound variable \"" ^ a.var ^ "\"", a.pos));
+    then raise (SemanticsError ("Unbound variable \"" ^ a.var ^ "\"", a.pos));
     let ae, et = analyze_expr env ua (Env.find a.var env) a.expr in
     Assign (a.var, ae), env, List.filter (fun x -> x <> a.var) ua
   | Syntax.Return r ->
