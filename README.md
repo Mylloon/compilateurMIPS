@@ -23,13 +23,13 @@ $ ./main.byte {fichier source} > sortie.s
 $ make test
 ```
 
-## Fonctionalités
+## Fonctionnalités
 
 -   [x] Type `int`
 -   [x] Type `bool`
 -   [ ] Type `string`
--   [x] Déclaration / Assignation de variables
--   [ ] Quelques fonction de base (multiplication, addition, comparateur, ...)
+-   [x] Déclaration / assignation de variables
+-   [ ] Quelques fonctions de base (multiplication, addition, comparateur, ...)
 -   [ ] Conditions
 -   [ ] Boucles
 -   [ ] Fonctions
