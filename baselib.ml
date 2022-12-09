@@ -16,10 +16,9 @@ let builtins =
   List.fold_left
     (fun env (fn, impl) -> Env.add fn impl env)
     Env.empty
-    [ "%add", [ Lw (T0, Mem (SP, 0)); Lw (T1, Mem (SP, 4)); Add (V0, T0, T1) ]
-    ; "%sub", [ Lw (T0, Mem (SP, 0)); Lw (T1, Mem (SP, 4)); Sub (V0, T0, T1) ]
-    ; "%mul", [ Lw (T0, Mem (SP, 0)); Lw (T1, Mem (SP, 4)); Mul (V0, T0, T1) ]
-    ; "%div", [ Lw (T0, Mem (SP, 0)); Lw (T1, Mem (SP, 4)); Div (V0, T1, T0) ]
-      (* %div: reversal of T1 and T0 ?? *)
+    [ "%add", [ Lw (T0, Mem (SP, 4)); Lw (T1, Mem (SP, 0)); Add (V0, T0, T1) ]
+    ; "%sub", [ Lw (T0, Mem (SP, 4)); Lw (T1, Mem (SP, 0)); Sub (V0, T0, T1) ]
+    ; "%mul", [ Lw (T0, Mem (SP, 4)); Lw (T1, Mem (SP, 0)); Mul (V0, T0, T1) ]
+    ; "%div", [ Lw (T0, Mem (SP, 4)); Lw (T1, Mem (SP, 0)); Div (V0, T0, T1) ]
     ]
 ;;
