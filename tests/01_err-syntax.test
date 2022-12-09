@@ -1,1 +1,1 @@
-a = 1312;
+a = 1312; # Error on line 1 col 2: Unbound variable "a".
