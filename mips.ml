@@ -52,6 +52,8 @@ type instr =
   | Div of reg * reg * reg
   | Syscall
   | B of label
+  | Beq of reg * reg * label
+  | Bne of reg * reg * label
   | Beqz of reg * label
   | Jal of label
   | Jr of reg
@@ -114,30 +116,35 @@ let fmt_loc = function
   | Mem (r, o) -> Printf.sprintf "%d(%s)" o (fmt_reg r)
 ;;
 
-let fmt_instr = function
+let fmt_instr ?(indent = "  ") = function
   | Label l -> Printf.sprintf "%s:" l
-  | Li (r, i) -> Printf.sprintf "  li %s, %d" (fmt_reg r) i
-  | La (r, a) -> Printf.sprintf "  la %s, %s" (fmt_reg r) (fmt_loc a)
-  | Sw (r, a) -> Printf.sprintf "  sw %s, %s" (fmt_reg r) (fmt_loc a)
-  | Lw (r, a) -> Printf.sprintf "  lw %s, %s" (fmt_reg r) (fmt_loc a)
-  | Sb (r, a) -> Printf.sprintf "  sb %s, %s" (fmt_reg r) (fmt_loc a)
-  | Lb (r, a) -> Printf.sprintf "  lb %s, %s" (fmt_reg r) (fmt_loc a)
-  | Move (rd, rs) -> Printf.sprintf "  move %s, %s" (fmt_reg rd) (fmt_reg rs)
-  | Neg (r, a) -> Printf.sprintf "  neg %s, %s" (fmt_reg r) (fmt_reg a)
-  | Addi (rd, rs, i) -> Printf.sprintf "  addi %s, %s, %d" (fmt_reg rd) (fmt_reg rs) i
+  | Li (r, i) -> Printf.sprintf "%sli %s, %d" indent (fmt_reg r) i
+  | La (r, a) -> Printf.sprintf "%sla %s, %s" indent (fmt_reg r) (fmt_loc a)
+  | Sw (r, a) -> Printf.sprintf "%ssw %s, %s" indent (fmt_reg r) (fmt_loc a)
+  | Lw (r, a) -> Printf.sprintf "%slw %s, %s" indent (fmt_reg r) (fmt_loc a)
+  | Sb (r, a) -> Printf.sprintf "%ssb %s, %s" indent (fmt_reg r) (fmt_loc a)
+  | Lb (r, a) -> Printf.sprintf "%slb %s, %s" indent (fmt_reg r) (fmt_loc a)
+  | Move (rd, rs) -> Printf.sprintf "%smove %s, %s" indent (fmt_reg rd) (fmt_reg rs)
+  | Neg (r, a) -> Printf.sprintf "%sneg %s, %s" indent (fmt_reg r) (fmt_reg a)
+  | Addi (rd, rs, i) ->
+    Printf.sprintf "%saddi %s, %s, %d" indent (fmt_reg rd) (fmt_reg rs) i
   | Add (rd, rs, rt) ->
-    Printf.sprintf "  add %s, %s, %s" (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
+    Printf.sprintf "%sadd %s, %s, %s" indent (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
   | Mul (rd, rs, rt) ->
-    Printf.sprintf "  mul %s, %s, %s" (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
+    Printf.sprintf "%smul %s, %s, %s" indent (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
   | Sub (rd, rs, rt) ->
-    Printf.sprintf "  sub %s, %s, %s" (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
+    Printf.sprintf "%ssub %s, %s, %s" indent (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
   | Div (rd, rs, rt) ->
-    Printf.sprintf "  div %s, %s, %s" (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
-  | Syscall -> Printf.sprintf "  syscall"
-  | B l -> Printf.sprintf "  b %s" l
-  | Beqz (r, l) -> Printf.sprintf "  beqz %s, %s" (fmt_reg r) l
-  | Jal l -> Printf.sprintf "  jal %s" l
-  | Jr r -> Printf.sprintf "  jr %s" (fmt_reg r)
+    Printf.sprintf "%sdiv %s, %s, %s" indent (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
+  | Syscall -> Printf.sprintf "%ssyscall" indent
+  | B l -> Printf.sprintf "%sb %s" indent l
+  | Beq (rs, rt, l) ->
+    Printf.sprintf "%sbeq %s, %s, %s" indent (fmt_reg rs) (fmt_reg rt) l
+  | Bne (rs, rt, l) ->
+    Printf.sprintf "%sbne %s, %s, %s" indent (fmt_reg rs) (fmt_reg rt) l
+  | Beqz (r, l) -> Printf.sprintf "%sbeqz %s, %s" indent (fmt_reg r) l
+  | Jal l -> Printf.sprintf "%sjal %s" indent l
+  | Jr r -> Printf.sprintf "%sjr %s" indent (fmt_reg r)
 ;;
 
 let fmt_dir = function
