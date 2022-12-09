@@ -22,7 +22,9 @@ rule token = parse
 | '='           { Lassign }
 | ';'           { Lsc }
 | '+'           { Ladd }
+| '-'           { Lsub }
 | '*'           { Lmul }
+| '/'           { Ldiv }
 | ident as i    { Lvar i }
 | '#'           { comment lexbuf }
 | _ as c        { raise (Error c) }

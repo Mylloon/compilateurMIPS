@@ -48,6 +48,8 @@ type instr =
   | Addi of reg * reg * int
   | Add of reg * reg * reg
   | Mul of reg * reg * reg
+  | Sub of reg * reg * reg
+  | Div of reg * reg * reg
   | Syscall
   | B of label
   | Beqz of reg * label
@@ -127,6 +129,10 @@ let fmt_instr = function
     Printf.sprintf "  add %s, %s, %s" (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
   | Mul (rd, rs, rt) ->
     Printf.sprintf "  mul %s, %s, %s" (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
+  | Sub (rd, rs, rt) ->
+    Printf.sprintf "  sub %s, %s, %s" (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
+  | Div (rd, rs, rt) ->
+    Printf.sprintf "  div %s, %s, %s" (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
   | Syscall -> Printf.sprintf "  syscall"
   | B l -> Printf.sprintf "  b %s" l
   | Beqz (r, l) -> Printf.sprintf "  beqz %s, %s" (fmt_reg r) l
