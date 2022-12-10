@@ -24,7 +24,7 @@ let rec analyze_expr env ua t = function
   | Syntax.Call c ->
     (match Env.find c.func env with
     | Func_t (ret_t, tl) ->
-      if ret_t != t then errt t ret_t c.pos;
+      if ret_t != t then errt ret_t t c.pos;
       ( Call
           ( c.func
           , List.map2
@@ -62,27 +62,47 @@ let analyze_instr env ua = function
 ;;
 
 let rec analyze_block env ua = function
-  | [] -> []
+  | [] -> [], ua
   | instr :: new_block ->
-    let new_instr, new_env, new_ua = analyze_instr env ua instr in
-    new_instr :: analyze_block new_env new_ua new_block
+    let new_instr, new_env, ua1 = analyze_instr env ua instr in
+    let new_block, ua2 = analyze_block new_env ua1 new_block in
+    new_instr :: new_block, ua2
 ;;
 
 let analyze_func env ua = function
   | Syntax.Func f ->
-    Func
-      ( f.func
-      , List.map
-          (fun a ->
-            match a with
-            | Syntax.Arg a -> a.name)
-          f.args
-      , analyze_block env ua f.code )
+    let rec add_args env = function
+      | [] -> env
+      | h :: t ->
+        (match h with
+        | Syntax.Arg a -> add_args (Env.add a.name a.type_t env) t)
+    in
+    let block, _ = analyze_block (add_args env f.args) ua f.code in
+    ( Func
+        ( f.func
+        , List.map
+            (fun a ->
+              match a with
+              | Syntax.Arg a -> a.name)
+            f.args
+        , block )
+    , Env.add
+        f.func
+        (Func_t
+           ( f.type_t
+           , List.map
+               (fun a ->
+                 match a with
+                 | Syntax.Arg a -> a.type_t)
+               f.args ))
+        env )
 ;;
 
 let rec analyze_prog env ua = function
   | [] -> []
-  | fn :: suite -> analyze_func env ua fn :: analyze_prog env ua suite
+  | fn :: suite ->
+    let fn, new_env = analyze_func env ua fn in
+    fn :: analyze_prog new_env ua suite
 ;;
 
 let analyze parsed = analyze_prog _types_ [] parsed
