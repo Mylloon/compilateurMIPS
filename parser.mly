@@ -142,7 +142,7 @@ expr:
     Call { func = "%div" ; args = [ a ; b ] ; pos = $startpos($2) }
   }
 
-  /* function() */
+  /* function(a */
   | f = Lvar ; Lpardeb ; a = args_expr {
     Call { func = f ; args = a ; pos = $startpos(a) }
   }
