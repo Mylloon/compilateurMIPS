@@ -98,11 +98,14 @@ let analyze_func env ua = function
         env )
 ;;
 
-let rec analyze_prog env ua = function
-  | [] -> []
+let rec analyze_prog env ua b default = function
+  | [] ->
+    if b
+    then []
+    else raise (SemanticsError ("No " ^ default ^ " function", Lexing.dummy_pos))
   | fn :: suite ->
     let fn, new_env = analyze_func env ua fn in
-    fn :: analyze_prog new_env ua suite
+    fn :: analyze_prog new_env ua (if b then b else Env.mem default new_env) default suite
 ;;
 
-let analyze parsed = analyze_prog _types_ [] parsed
+let analyze parsed = analyze_prog _types_ [] false "main" parsed
