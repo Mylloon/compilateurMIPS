@@ -1,8 +1,9 @@
-int cops_calculator () {
-    int res = 13 * 100 + 20 - 8;
+int cops_calculator (int a) {
+    int res = a * 100 + 20 - 8;
     return res * 2 / 2;
 }
 
 void main () {
-    cops_calculator();
+    int magic_number = 13;
+    cops_calculator(magic_number);
 }

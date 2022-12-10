@@ -18,7 +18,7 @@
 
 %type <Ast.Syntax.block> block
 %type <Ast.Syntax.prog> prog
-%type <Ast.Syntax.ident list> args_ident
+%type <Ast.Syntax.args> args_ident
 %type <Ast.Syntax.expr list> args_expr
 
 %%
@@ -52,17 +52,20 @@ args_ident:
   | Lpardeb ; s = args_ident { s }
 
   /* a, ... */
-  | a = arg_ident ; Lcomma ; s = args_ident { a @ s }
+  | t = Ltype ; a = arg_ident ; Lcomma ; s = args_ident { Arg { type_t = t
+                                                              ; name = a
+                                                              } :: s }
 
   /* c) */
-  | a = arg_ident ; Lparfin { a }
+  | t = Ltype ; a = arg_ident ; Lparfin { [ Arg { type_t = t
+                                                ; name = a } ] }
 
   /* ) */
   | Lparfin { [] }
 
 arg_ident:
   /* Argument */
-  | a = Lvar { [ a ] }
+  | a = Lvar { a }
 
 block:
   /* { */

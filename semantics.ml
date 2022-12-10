@@ -69,7 +69,15 @@ let rec analyze_block env ua = function
 ;;
 
 let analyze_func env ua = function
-  | Syntax.Func f -> Func (f.func, f.args, analyze_block env ua f.code)
+  | Syntax.Func f ->
+    Func
+      ( f.func
+      , List.map
+          (fun a ->
+            match a with
+            | Syntax.Arg a -> a.name)
+          f.args
+      , analyze_block env ua f.code )
 ;;
 
 let rec analyze_prog env ua = function

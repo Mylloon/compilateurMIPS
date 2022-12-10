@@ -49,11 +49,19 @@ module Syntax = struct
 
   type block = instr list
 
+  type arg =
+    | Arg of
+        { type_t : type_t
+        ; name : ident
+        }
+
+  type args = arg list
+
   type def =
     | Func of
         { func : ident
         ; type_t : type_t
-        ; args : ident list
+        ; args : args
         ; code : block
         ; pos : Lexing.position
         }

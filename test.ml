@@ -25,7 +25,13 @@ let debug_parser oc parsed =
       ^ ", \""
       ^ d.func
       ^ ", ["
-      ^ String.concat "\n; " d.args
+      ^ String.concat
+          "\n; "
+          (List.map
+             (fun a ->
+               match a with
+               | Syntax.Arg a -> " (" ^ string_of_type_t a.type_t ^ ")" ^ a.name ^ " ")
+             d.args)
       ^ "], ["
       ^ fmt_b d.code
       ^ "])\n"
