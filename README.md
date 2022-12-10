@@ -36,6 +36,7 @@ $ make test
     <!-- -   [ ] Allocation mémoire (`malloc`) -->
     <!-- -   [ ] Pointeurs -->
     <!-- -   [ ] Listes + fonctions écrites dans notre language pour gérer ses listes -->
+    <!-- -   [ ] Structures -->
 
 ### Améliorations
 
