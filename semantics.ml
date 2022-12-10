@@ -24,7 +24,7 @@ let rec analyze_expr env ua t = function
   | Syntax.Call c ->
     (match Env.find c.func env with
     | Func_t (ret_t, tl) ->
-      if ret_t != t then errt ret_t t c.pos;
+      if ret_t != t && t != Magic_t then errt ret_t t c.pos;
       if List.length tl != List.length c.args
       then
         raise
@@ -63,7 +63,7 @@ let analyze_instr env ua ret_t = function
     let ae, et = analyze_expr env ua (Env.find a.var env) a.expr in
     Assign (a.var, ae), env, List.filter (fun x -> x <> a.var) ua
   | Syntax.Do d ->
-    let ae, _ = analyze_expr env ua Int_t d.expr in
+    let ae, _ = analyze_expr env ua Magic_t d.expr in
     Do ae, env, []
   | Syntax.Return r ->
     let ae, _ = analyze_expr env ua ret_t r.expr in

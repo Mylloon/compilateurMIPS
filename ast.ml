@@ -1,4 +1,5 @@
 type type_t =
+  | Magic_t
   | Void_t
   | Int_t
   | Bool_t
