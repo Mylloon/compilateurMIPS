@@ -1,1 +1,3 @@
-int a = 1312;
+void main () {
+    int a = 1312;
+}

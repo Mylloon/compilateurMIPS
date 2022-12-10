@@ -1,2 +1,4 @@
-int foo = 1312;
-bool bar = foo; # Error on line 2 col 11: Expected bool but given int.
+void main () {
+    int foo = 1312;
+    bool bar = foo; # Error on line 3 col 15: Expected bool but given int.
+}

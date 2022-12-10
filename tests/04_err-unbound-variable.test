@@ -1,1 +1,3 @@
-foo = 1312; # Error on line 1 col 4: Unbound variable "foo".
+void main () {
+    foo = 1312; # Error on line 2 col 8: Unbound variable "foo".
+}

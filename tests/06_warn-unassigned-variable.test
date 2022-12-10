@@ -1,2 +1,4 @@
-int foo;
-int bar = foo; # Warning on line 2 col 10: Unassigned variable "foo".
+void main () {
+    int foo;
+    int bar = foo; # Warning on line 3 col 14: Unassigned variable "foo".
+}

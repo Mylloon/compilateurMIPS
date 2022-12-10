@@ -1,2 +1,5 @@
-int vie = 42;
-return vie;
+int main () {
+    int vie = 42;
+
+    return vie;
+}
