@@ -13,18 +13,19 @@ let err msg pos =
   exit 1
 ;;
 
+let rec string_of_type_t = function
+  | Void_t -> "void"
+  | Int_t -> "int"
+  | Bool_t -> "bool"
+  | Func_t (r, a) ->
+    (if List.length a > 1 then "(" else "")
+    ^ String.concat ", " (List.map string_of_type_t a)
+    ^ (if List.length a > 1 then ")" else "")
+    ^ " -> "
+    ^ string_of_type_t r
+;;
+
 let errt expected given pos =
-  let rec string_of_type_t = function
-    | Void_t -> "void"
-    | Int_t -> "int"
-    | Bool_t -> "bool"
-    | Func_t (r, a) ->
-      (if List.length a > 1 then "(" else "")
-      ^ String.concat ", " (List.map string_of_type_t a)
-      ^ (if List.length a > 1 then ")" else "")
-      ^ " -> "
-      ^ string_of_type_t r
-  in
   raise
     (SemanticsError
        ( Printf.sprintf

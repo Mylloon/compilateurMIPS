@@ -19,6 +19,11 @@ rule token = parse
 | "int"         { Ltype (Int_t) }
 | "bool"        { Ltype (Bool_t) }
 | "void"        { Ltype (Void_t) }
+| '{'           { Lbracedeb }
+| '}'           { Lbracefin }
+| '('           { Lpardeb }
+| ')'           { Lparfin }
+| ','           { Lcomma }
 | '='           { Lassign }
 | ';'           { Lsc }
 | '+'           { Ladd }

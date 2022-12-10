@@ -53,6 +53,9 @@ let analyze_instr env ua = function
     then raise (SemanticsError ("Unbound variable \"" ^ a.var ^ "\"", a.pos));
     let ae, et = analyze_expr env ua (Env.find a.var env) a.expr in
     Assign (a.var, ae), env, List.filter (fun x -> x <> a.var) ua
+  | Syntax.Do d ->
+    let ae, _ = analyze_expr env ua Int_t d.expr in
+    Do ae, env, []
   | Syntax.Return r ->
     let ae, _ = analyze_expr env ua Int_t r.expr in
     Return ae, env, []
@@ -65,22 +68,13 @@ let rec analyze_block env ua = function
     new_instr :: analyze_block new_env new_ua new_block
 ;;
 
-let analyze parsed = analyze_block _types_ [] parsed
-
-let emit oc ast =
-  let rec fmt_v = function
-    | Void -> "Void"
-    | Int n -> "Int " ^ string_of_int n
-    | Bool b -> "Bool " ^ string_of_bool b
-  and fmt_e = function
-    | Val v -> "Val (" ^ fmt_v v ^ ")"
-    | Var v -> "Var \"" ^ v ^ "\""
-    | Call (f, a) ->
-      "Call (\"" ^ f ^ "\", [ " ^ String.concat " ; " (List.map fmt_e a) ^ " ])"
-  and fmt_i = function
-    | Decl v -> "Decl \"" ^ v ^ "\""
-    | Assign (v, e) -> "Assign (\"" ^ v ^ "\", " ^ fmt_e e ^ ")"
-    | Return e -> "Return (" ^ fmt_e e ^ ")"
-  and fmt_b b = "[ " ^ String.concat "\n; " (List.map fmt_i b) ^ " ]" in
-  Printf.fprintf oc "%s\n" (fmt_b ast)
+let analyze_func env ua = function
+  | Syntax.Func f -> Func (f.func, f.args, analyze_block env ua f.code)
 ;;
+
+let rec analyze_prog env ua = function
+  | [] -> []
+  | fn :: suite -> analyze_func env ua fn :: analyze_prog env ua suite
+;;
+
+let analyze parsed = analyze_prog _types_ [] parsed

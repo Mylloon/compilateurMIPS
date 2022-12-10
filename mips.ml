@@ -152,7 +152,7 @@ let fmt_dir = function
 ;;
 
 let emit oc asm =
-  Printf.fprintf oc ".text\n.globl main\nmain:\n";
+  Printf.fprintf oc ".text\n.globl main\n";
   List.iter (fun i -> Printf.fprintf oc "%s\n" (fmt_instr i)) asm.text;
   Printf.fprintf
     oc

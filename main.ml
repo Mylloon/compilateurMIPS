@@ -10,8 +10,9 @@ let () =
   try
     let parsed = Parser.prog Lexer.token buf in
     close_in f;
+    Test.debug_parser Stdlib.stderr parsed;
     let ast = Semantics.analyze parsed in
-    (* Semantics.emit Stdlib.stderr ast; *)
+    (* Test.debug_semantics Stdlib.stderr ast; *)
     let asm = Compiler.compile ast in
     Mips.emit Stdlib.stdout asm
   with

@@ -35,6 +35,7 @@ let compile_instr info = function
     { info with
       asm = info.asm @ compile_expr info.env e @ [ Sw (V0, Env.find v info.env) ]
     }
+  | Do e -> { info with asm = info.asm @ compile_expr info.env e }
   | Return e -> { info with asm = info.asm @ compile_expr info.env e @ [ B info.ret ] }
 ;;
 
@@ -43,7 +44,7 @@ let rec compile_block info = function
   | i :: b -> compile_block (compile_instr info i) b
 ;;
 
-let compile_body body counter =
+let compile_def (Func (name, args, body)) counter =
   let compiled =
     compile_block
       { asm = []
@@ -54,21 +55,30 @@ let compile_body body counter =
       }
       body
   in
-  [ Addi (SP, SP, -compiled.fpo)
-  ; Sw (RA, Mem (SP, compiled.fpo - 4))
-  ; Sw (FP, Mem (SP, compiled.fpo - 8))
-  ; Addi (FP, SP, compiled.fpo - 4)
-  ]
-  @ compiled.asm
-  @ [ Label compiled.ret
-    ; Addi (SP, SP, compiled.fpo)
-    ; Lw (RA, Mem (FP, 0))
-    ; Lw (FP, Mem (FP, -4))
-    ; Jr RA
+  ( compiled.cnt
+  , [ Label name
+    ; Addi (SP, SP, -compiled.fpo)
+    ; Sw (RA, Mem (SP, compiled.fpo - 4))
+    ; Sw (FP, Mem (SP, compiled.fpo - 8))
+    ; Addi (FP, SP, compiled.fpo - 4)
     ]
+    @ compiled.asm
+    @ [ Label compiled.ret
+      ; Addi (SP, SP, compiled.fpo)
+      ; Lw (RA, Mem (FP, 0))
+      ; Lw (FP, Mem (FP, -4))
+      ; Jr RA
+      ] )
+;;
+
+let rec compile_prog counter = function
+  | [] -> []
+  | d :: r ->
+    let new_counter, cd = compile_def d counter in
+    cd @ compile_prog new_counter r
 ;;
 
 let compile ir =
-  let asm = compile_body ir 0 in
+  let asm = compile_prog 0 ir in
   { text = asm; data = [] }
 ;;

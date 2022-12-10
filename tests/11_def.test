@@ -1,0 +1,8 @@
+int cops_calculator () {
+    int res = 13 * 100 + 20 - 8;
+    return res * 2 / 2;
+}
+
+void main () {
+    cops_calculator();
+}
