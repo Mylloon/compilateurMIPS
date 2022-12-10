@@ -29,13 +29,13 @@ $ make test
 -   [x] Type `bool`
 -   [ ] Type `string`
 -   [x] Déclaration / assignation de variables
--   [x] Librairie standard (multiplication, addition, comparateur, ...)
+-   [x] Librairie standard (multiplication, addition, comparateur, print, ...)
 -   [ ] Conditions
 -   [ ] Boucles
 -   [x] Fonctions utilisateurs (arguments et valeur de retour typé)
--   [ ] Allocation mémoire (`malloc`)
--   [ ] Pointeurs
--   [ ] Listes + fonctions écrites dans notre language pour gérer ses listes
+    <!-- -   [ ] Allocation mémoire (`malloc`) -->
+    <!-- -   [ ] Pointeurs -->
+    <!-- -   [ ] Listes + fonctions écrites dans notre language pour gérer ses listes -->
 
 ### Améliorations
 
