@@ -74,8 +74,11 @@ let rec analyze_block env ua ret_t = function
   | [] -> [], ua
   | instr :: new_block ->
     let new_instr, new_env, ua1 = analyze_instr env ua ret_t instr in
-    let new_block, ua2 = analyze_block new_env ua1 ret_t new_block in
-    new_instr :: new_block, ua2
+    (match new_instr with
+    | Return _ -> [ new_instr ], ua1
+    | _ ->
+      let new_block, ua2 = analyze_block new_env ua1 ret_t new_block in
+      new_instr :: new_block, ua2)
 ;;
 
 let analyze_func env ua = function
