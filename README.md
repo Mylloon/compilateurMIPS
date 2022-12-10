@@ -32,7 +32,7 @@ $ make test
 -   [x] Librairie standard (multiplication, addition, comparateur, ...)
 -   [ ] Conditions
 -   [ ] Boucles
--   [ ] Fonctions utilisateurs
+-   [ ] Fonctions utilisateurs (arguments et valeur de retour typé)
 -   [ ] Allocation mémoire (`malloc`)
 -   [ ] Pointeurs
 -   [ ] Listes + fonctions écrites dans notre language pour gérer ses listes
