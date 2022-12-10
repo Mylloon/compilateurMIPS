@@ -3,5 +3,5 @@ int foo (int a) {
 }
 
 void main () {
-    foo(13, 12);
+    foo(13, 12); # Error on line 6 col 8: Expected 1 arguments but given 2.
 }
