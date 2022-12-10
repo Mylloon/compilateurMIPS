@@ -25,6 +25,15 @@ let rec analyze_expr env ua t = function
     (match Env.find c.func env with
     | Func_t (ret_t, tl) ->
       if ret_t != t then errt ret_t t c.pos;
+      if List.length tl != List.length c.args
+      then
+        raise
+          (SemanticsError
+             ( Printf.sprintf
+                 "Expected %d arguments but given %d"
+                 (List.length tl)
+                 (List.length c.args)
+             , c.pos ));
       ( Call
           ( c.func
           , List.map2
