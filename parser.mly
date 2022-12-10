@@ -51,12 +51,12 @@ args_ident:
   /* ( */
   | Lpardeb ; s = args_ident { s }
 
-  /* a, ... */
+  /* type a, ... */
   | t = Ltype ; a = arg_ident ; Lcomma ; s = args_ident { Arg { type_t = t
                                                               ; name = a
                                                               } :: s }
 
-  /* c) */
+  /* type c) */
   | t = Ltype ; a = arg_ident ; Lparfin { [ Arg { type_t = t
                                                 ; name = a } ] }
 
@@ -98,23 +98,10 @@ instr:
     [ Assign { var = v ; expr = e ; pos = $startpos($2) } ]
   }
 
-  /* function(); */
-  | f = Lvar ; a = args_expr ; Lsc {
-    [ Do { expr = Call { func = f ; args = a ; pos = $startpos(a) } ; pos = $startpos} ]
+  /* e; */
+  | e = expr ; Lsc {
+    [ Do { expr = e ; pos = $startpos} ]
   }
-
-args_expr:
-  /* ( */
-  | Lpardeb ; s = args_expr { s }
-
-  /* a, ... */
-  | a = expr ; Lcomma ; s = args_expr { a :: s }
-
-  /* c) */
-  | a = expr ; Lparfin { [ a ] }
-
-  /* ) */
-  | Lparfin { [] }
 
 expr:
   /* int */
@@ -151,4 +138,19 @@ expr:
   | a = expr ; Ldiv ; b = expr {
     Call { func = "%div" ; args = [ a ; b ] ; pos = $startpos($2) }
   }
+
+  /* function() */
+  | f = Lvar ; Lpardeb ; a = args_expr {
+    Call { func = f ; args = a ; pos = $startpos(a) }
+  }
 ;
+
+args_expr:
+  /* a, ... */
+  | a = expr ; Lcomma ; s = args_expr { a :: s }
+
+  /* c) */
+  | a = expr ; Lparfin { [ a ] }
+
+  /* ) */
+  | Lparfin { [] }
