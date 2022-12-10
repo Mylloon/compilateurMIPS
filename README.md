@@ -36,3 +36,7 @@ $ make test
 -   [ ] Allocation mémoire (`malloc`)
 -   [ ] Pointeurs
 -   [ ] Listes + fonctions écrites dans notre language pour gérer ses listes
+
+### Améliorations
+
+-   Fonctions de la baselib sont _inline_
