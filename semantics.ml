@@ -55,7 +55,7 @@ let rec analyze_expr env ua t = function
     | _ -> raise (SemanticsError ("\"" ^ c.func ^ "\" isn't a function", c.pos)))
 ;;
 
-let analyze_instr env ua = function
+let analyze_instr env ua ret_t = function
   | Syntax.Decl d -> Decl d.name, Env.add d.name d.type_t env, [ d.name ] @ ua
   | Syntax.Assign a ->
     if not (Env.mem a.var env)
@@ -66,15 +66,15 @@ let analyze_instr env ua = function
     let ae, _ = analyze_expr env ua Int_t d.expr in
     Do ae, env, []
   | Syntax.Return r ->
-    let ae, _ = analyze_expr env ua Int_t r.expr in
+    let ae, _ = analyze_expr env ua ret_t r.expr in
     Return ae, env, []
 ;;
 
-let rec analyze_block env ua = function
+let rec analyze_block env ua ret_t = function
   | [] -> [], ua
   | instr :: new_block ->
-    let new_instr, new_env, ua1 = analyze_instr env ua instr in
-    let new_block, ua2 = analyze_block new_env ua1 new_block in
+    let new_instr, new_env, ua1 = analyze_instr env ua ret_t instr in
+    let new_block, ua2 = analyze_block new_env ua1 ret_t new_block in
     new_instr :: new_block, ua2
 ;;
 
@@ -86,7 +86,7 @@ let analyze_func env ua = function
         (match h with
         | Syntax.Arg a -> add_args (Env.add a.name a.type_t env) t)
     in
-    let block, _ = analyze_block (add_args env f.args) ua f.code in
+    let block, _ = analyze_block (add_args env f.args) ua f.type_t f.code in
     ( Func
         ( f.func
         , List.map

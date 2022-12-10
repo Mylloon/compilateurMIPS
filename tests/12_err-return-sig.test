@@ -1,0 +1,5 @@
+bool main () {
+    int vie = 42;
+
+    return vie; # Error on line 4 col 11: Expected bool but given int.
+}
