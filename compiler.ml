@@ -25,7 +25,11 @@ let rec compile_expr env = function
         (fun a -> compile_expr env a @ [ Addi (SP, SP, -4); Sw (V0, Mem (SP, 0)) ])
         args
     in
-    List.flatten ca @ Env.find f Baselib.builtins
+    List.flatten ca
+    @
+    if Env.mem f Baselib.builtins
+    then Env.find f Baselib.builtins
+    else [ Jal f; Addi (SP, SP, 4 * List.length args) ]
 ;;
 
 let compile_instr info = function
@@ -48,7 +52,11 @@ let compile_def (Func (name, args, body)) counter =
   let compiled =
     compile_block
       { asm = []
-      ; env = Env.empty
+      ; env =
+          List.fold_left
+            (fun env (arg, addr) -> Env.add arg addr env)
+            Env.empty
+            (List.mapi (fun i a -> a, Mem (FP, 4 * (i + 1))) (List.rev args))
       ; fpo = 8
       ; cnt = counter + 1
       ; ret = "ret" ^ string_of_int counter
