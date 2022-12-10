@@ -71,7 +71,7 @@ block:
   /* { */
   | Lbracedeb ; b = block { b }
 
-  /* instr; ... */
+  /* instr ... */
   | i = instr ; b = block { i @ b }
 
   /* } */
@@ -79,26 +79,26 @@ block:
 ;
 
 instr:
-  /* return x */
+  /* return x; */
   | Lreturn ; e = expr ; Lsc { [ Return { expr = e ; pos = $startpos } ] }
 
-  /* type v */
+  /* type v; */
   | t = Ltype ; v = Lvar ; Lsc {
     [ Decl { name = v ; type_t = t ; pos = $startpos(t) } ]
   }
 
-  /* type v = e */
+  /* type v = e; */
   | t = Ltype ; v = Lvar ; Lassign ; e = expr ; Lsc
     { [ Decl { name = v ; type_t = t ; pos = $startpos(t) }
     ; Assign { var = v ; expr = e ; pos = $startpos(v) } ]
     }
 
-  /* v = e */
+  /* v = e; */
   | v = Lvar ; Lassign ; e = expr ; Lsc {
     [ Assign { var = v ; expr = e ; pos = $startpos($2) } ]
   }
 
-  /* function() */
+  /* function(); */
   | f = Lvar ; a = args_expr ; Lsc {
     [ Do { expr = Call { func = f ; args = a ; pos = $startpos(a) } ; pos = $startpos} ]
   }
