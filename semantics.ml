@@ -70,14 +70,16 @@ let analyze_instr env ua ret_t = function
     Return ae, env, []
 ;;
 
-let rec analyze_block env ua ret_t = function
-  | [] -> [], ua
+let rec analyze_block env ua ret_t pos = function
+  | [] ->
+    if ret_t != Void_t then warn "Non-void function without return" pos;
+    [], ua
   | instr :: new_block ->
     let new_instr, new_env, ua1 = analyze_instr env ua ret_t instr in
     (match new_instr with
     | Return _ -> [ new_instr ], ua1
     | _ ->
-      let new_block, ua2 = analyze_block new_env ua1 ret_t new_block in
+      let new_block, ua2 = analyze_block new_env ua1 ret_t pos new_block in
       new_instr :: new_block, ua2)
 ;;
 
@@ -89,7 +91,7 @@ let analyze_func env ua = function
         (match h with
         | Syntax.Arg a -> add_args (Env.add a.name a.type_t env) t)
     in
-    let block, _ = analyze_block (add_args env f.args) ua f.type_t f.code in
+    let block, _ = analyze_block (add_args env f.args) ua f.type_t f.pos f.code in
     ( Func
         ( f.func
         , List.map
