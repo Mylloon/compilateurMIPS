@@ -14,6 +14,7 @@ let err msg pos =
 ;;
 
 let rec string_of_type_t = function
+  | Magic_t -> "magic"
   | Void_t -> "void"
   | Int_t -> "int"
   | Bool_t -> "bool"
