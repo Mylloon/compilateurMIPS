@@ -9,6 +9,7 @@ let _types_ =
        ; "%sub", Func_t (Int_t, [ Int_t; Int_t ])
        ; "%mul", Func_t (Int_t, [ Int_t; Int_t ])
        ; "%div", Func_t (Int_t, [ Int_t; Int_t ])
+       ; "puti", Func_t (Int_t, [ Int_t ])
        ])
 ;;
 
@@ -20,5 +21,6 @@ let builtins =
     ; "%sub", [ Lw (T0, Mem (SP, 4)); Lw (T1, Mem (SP, 0)); Sub (V0, T0, T1) ]
     ; "%mul", [ Lw (T0, Mem (SP, 4)); Lw (T1, Mem (SP, 0)); Mul (V0, T0, T1) ]
     ; "%div", [ Lw (T0, Mem (SP, 4)); Lw (T1, Mem (SP, 0)); Div (V0, T0, T1) ]
+    ; "puti", [ Lw (A0, Mem (SP, 0)); Li (V0, Syscall.print_int); Syscall ]
     ]
 ;;
