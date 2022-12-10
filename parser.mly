@@ -14,6 +14,9 @@
 
 %left Ladd Lsub Lmul Ldiv
 
+%left Lbracedeb Lparfin Lbracefin Lreturn
+%left Ltype Lbool Lint Lvar
+
 %start prog
 
 %type <Ast.Syntax.block> block
