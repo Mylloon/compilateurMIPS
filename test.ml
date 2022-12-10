@@ -17,25 +17,25 @@ let debug_parser oc parsed =
     | Syntax.Assign d -> "Assign (\"" ^ d.var ^ "\", " ^ fmt_e d.expr ^ ")"
     | Syntax.Do d -> "Do (" ^ fmt_e d.expr ^ ")"
     | Syntax.Return d -> "Return (" ^ fmt_e d.expr ^ ")"
-  and fmt_b b = "[ " ^ String.concat "\n; " (List.map fmt_i b) ^ " ]"
+  and fmt_b b = " [ " ^ String.concat "\n ; " (List.map fmt_i b) ^ "\n ]"
   and fmt_f = function
     | Syntax.Func d ->
       "Func ( "
       ^ string_of_type_t d.type_t
       ^ ", \""
       ^ d.func
-      ^ ", ["
+      ^ "\", [ "
       ^ String.concat
-          "\n; "
+          ", "
           (List.map
              (fun a ->
                match a with
-               | Syntax.Arg a -> " (" ^ string_of_type_t a.type_t ^ ")" ^ a.name ^ " ")
+               | Syntax.Arg a -> "(" ^ string_of_type_t a.type_t ^ ")" ^ a.name ^ "")
              d.args)
-      ^ "], ["
+      ^ " ], [\n"
       ^ fmt_b d.code
-      ^ "])\n"
-  and fmt_p p = "[ " ^ String.concat "\n; " (List.map fmt_f p) ^ "]" in
+      ^ "])"
+  and fmt_p p = "[ " ^ String.concat "\n; " (List.map fmt_f p) ^ "\n]" in
   Printf.fprintf oc "%s\n" (fmt_p parsed)
 ;;
 
@@ -54,6 +54,10 @@ let debug_semantics oc ast =
     | Assign (v, e) -> "Assign (\"" ^ v ^ "\", " ^ fmt_e e ^ ")"
     | Do e -> "Do (" ^ fmt_e e ^ ")"
     | Return e -> "Return (" ^ fmt_e e ^ ")"
-  and fmt_b b = "[ " ^ String.concat "\n; " (List.map fmt_i b) ^ " ]" in
-  Printf.fprintf oc "%s\n" (fmt_b ast)
+  and fmt_b b = "[ " ^ String.concat "\n; " (List.map fmt_i b) ^ " ]"
+  and fmt_f = function
+    | Func (f, args, b) ->
+      "Func ( " ^ f ^ ", [" ^ String.concat " ; " args ^ "],\n[" ^ fmt_b b ^ "])\n"
+  and fmt_p p = "[ " ^ String.concat "\n; " (List.map fmt_f p) ^ "]" in
+  Printf.fprintf oc "%s\n" (fmt_p ast)
 ;;
