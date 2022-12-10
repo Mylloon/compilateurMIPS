@@ -54,10 +54,10 @@ args_ident:
   /* a, ... */
   | a = arg_ident ; Lcomma ; s = args_ident { a @ s }
 
-  /* ..., c) */
+  /* c) */
   | a = arg_ident ; Lparfin { a }
 
-  /* ..., c) */
+  /* ) */
   | Lparfin { [] }
 
 arg_ident:
@@ -107,10 +107,10 @@ args_expr:
   /* a, ... */
   | a = expr ; Lcomma ; s = args_expr { a :: s }
 
-  /* ..., c) */
+  /* c) */
   | a = expr ; Lparfin { [ a ] }
 
-  /* ..., c) */
+  /* ) */
   | Lparfin { [] }
 
 expr:
