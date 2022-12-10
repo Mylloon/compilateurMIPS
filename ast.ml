@@ -70,16 +70,29 @@ module Syntax = struct
   type prog = def list
 end
 
-module IR = struct
-  type ident = string
+module type Parameters = sig
+  type value
+end
 
+module V1 = struct
   type value =
     | Void
     | Int of int
     | Bool of bool
+end
+
+module V2 = struct
+  type value =
+    | Void
+    | Int of int
+    | Bool of bool
+end
+
+module IR (P : Parameters) = struct
+  type ident = string
 
   type expr =
-    | Val of value
+    | Val of P.value
     | Var of ident
     | Call of ident * expr list
 
@@ -93,3 +106,6 @@ module IR = struct
   type def = Func of ident * ident list * block
   type prog = def list
 end
+
+module IR1 = IR (V1)
+module IR2 = IR (V2)

@@ -1,4 +1,5 @@
 open Errors
+open Simplifier
 
 let () =
   if Array.length Sys.argv != 2
@@ -13,7 +14,7 @@ let () =
     (* Test.debug_parser Stdlib.stderr parsed; *)
     let ast = Semantics.analyze parsed in
     (* Test.debug_semantics Stdlib.stderr ast; *)
-    let asm = Compiler.compile ast in
+    let asm = Compiler.compile (simplify ast) in
     Mips.emit Stdlib.stdout asm
   with
   | LexerError c ->

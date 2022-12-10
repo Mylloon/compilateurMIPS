@@ -1,6 +1,7 @@
-open Ast.IR
+open Ast.IR2
+open Ast.V2
 open Mips
-module Env = Map.Make (String)
+open Baselib
 
 type info =
   { asm : instr list
@@ -86,7 +87,7 @@ let rec compile_prog counter = function
     cd @ compile_prog new_counter r
 ;;
 
-let compile ir =
+let compile (ir, data) =
   let asm = compile_prog 0 ir in
-  { text = asm; data = [] }
+  { text = asm; data }
 ;;
