@@ -1,3 +1,3 @@
-int main(a) {
+int main(a) { # Error on line 1 col 9: Syntax error.
     return a;
 }

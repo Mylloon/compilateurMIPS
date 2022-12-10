@@ -3,5 +3,5 @@ int foo(int a) {
 }
 
 void main() {
-    void b = foo(1);
+    void b = foo(1); # Error on line 6 col 17: Expected int but given void.
 }
