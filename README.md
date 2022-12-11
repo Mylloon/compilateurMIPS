@@ -40,4 +40,4 @@ $ make test
 
 ### Améliorations
 
--   Fonctions de la baselib sont _inline_
+-   Fonctions de la baselib sont _inlinées_
