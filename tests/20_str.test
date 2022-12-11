@@ -1,0 +1,3 @@
+void main () {
+    str a = "bonjour!";
+}

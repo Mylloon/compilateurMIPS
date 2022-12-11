@@ -5,6 +5,7 @@
 
 %token <int> Lint
 %token <bool> Lbool
+%token <string> Lstr
 %token <Ast.type_t> Ltype
 %token <string> Lvar
 %token Lend Lassign Lsc Lreturn
@@ -15,7 +16,7 @@
 %left Ladd Lsub Lmul Ldiv
 
 %left Lbracedeb Lparfin Lbracefin Lreturn
-%left Ltype Lbool Lint Lvar
+%left Ltype Lbool Lint Lvar Lstr
 
 %start prog
 
@@ -115,6 +116,11 @@ expr:
   /* bool */
   | b = Lbool {
     Val { value = Bool (b) ; pos = $startpos(b) }
+  }
+
+  /* string */
+  | s = Lstr {
+    Val { value = Str (s) ; pos = $startpos(s) }
   }
 
   /* Variable */

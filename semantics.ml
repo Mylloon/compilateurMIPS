@@ -8,6 +8,7 @@ let analyze_value = function
   | Syntax.Void -> Void, Void_t
   | Syntax.Int n -> Int n, Int_t
   | Syntax.Bool b -> Bool b, Bool_t
+  | Syntax.Str s -> Str s, Str_t
 ;;
 
 let rec analyze_expr env ua t = function

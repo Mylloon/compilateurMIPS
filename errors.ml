@@ -3,6 +3,7 @@ open Lexing
 
 exception LexerError of char
 exception SemanticsError of string * Lexing.position
+exception SyntaxError of string
 
 let err msg pos =
   Printf.eprintf
@@ -18,6 +19,7 @@ let rec string_of_type_t = function
   | Void_t -> "void"
   | Int_t -> "int"
   | Bool_t -> "bool"
+  | Str_t -> "str"
   | Func_t (r, a) ->
     (if List.length a > 1 then "(" else "")
     ^ String.concat ", " (List.map string_of_type_t a)

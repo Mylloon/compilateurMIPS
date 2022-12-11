@@ -3,6 +3,7 @@ type type_t =
   | Void_t
   | Int_t
   | Bool_t
+  | Str_t
   | Func_t of type_t * type_t list
 
 module Syntax = struct
@@ -12,6 +13,7 @@ module Syntax = struct
     | Void
     | Int of int
     | Bool of bool
+    | Str of string
 
   type expr =
     | Val of
@@ -79,6 +81,7 @@ module V1 = struct
     | Void
     | Int of int
     | Bool of bool
+    | Str of string
 end
 
 module V2 = struct
@@ -86,6 +89,7 @@ module V2 = struct
     | Void
     | Int of int
     | Bool of bool
+    | Data of string
 end
 
 module IR (P : Parameters) = struct

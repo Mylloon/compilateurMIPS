@@ -1,10 +1,15 @@
 open Ast
 
 let collect_constant_strings code =
+  let counter = ref 0 in
   let ccs_value = function
     | V1.Void -> V2.Void, []
     | V1.Bool b -> V2.Bool b, []
     | V1.Int n -> V2.Int n, []
+    | V1.Str s ->
+      incr counter;
+      let lbl = "str" ^ string_of_int !counter in
+      V2.Data lbl, [ lbl, Mips.Asciiz s ]
   in
   let rec ccs_expr = function
     | IR1.Val v ->

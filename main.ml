@@ -18,6 +18,7 @@ let () =
   with
   | LexerError c ->
     err (Printf.sprintf "Unrecognized char \"%c\"" c) (Lexing.lexeme_start_p buf)
+  | SyntaxError s -> err (Printf.sprintf "%s" s) (Lexing.lexeme_start_p buf)
   | Parser.Error -> err "Syntax error" (Lexing.lexeme_start_p buf)
   | SemanticsError (msg, pos) -> err msg pos
 ;;
