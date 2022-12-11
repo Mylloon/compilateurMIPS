@@ -1,5 +1,6 @@
 open Ast
-open Ast.IR
+open Ast.IR1
+open Ast.V1
 open Errors
 
 let debug_parser oc parsed =
@@ -7,6 +8,7 @@ let debug_parser oc parsed =
     | Syntax.Void -> "Void"
     | Syntax.Int d -> "Int " ^ string_of_int d
     | Syntax.Bool d -> "Bool " ^ string_of_bool d
+    | Syntax.Str s -> "Str " ^ s
   and fmt_e = function
     | Syntax.Val d -> "Val (" ^ fmt_v d.value ^ ")"
     | Syntax.Var d -> "Var \"" ^ d.name ^ "\""
@@ -44,6 +46,7 @@ let debug_semantics oc ast =
     | Void -> "Void"
     | Int n -> "Int " ^ string_of_int n
     | Bool b -> "Bool " ^ string_of_bool b
+    | Str s -> "String " ^ s
   and fmt_e = function
     | Val v -> "Val (" ^ fmt_v v ^ ")"
     | Var v -> "Var \"" ^ v ^ "\""
