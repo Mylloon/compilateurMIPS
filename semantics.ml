@@ -31,28 +31,29 @@ let rec analyze_expr env ua t = function
         raise
           (SemanticsError
              ( Printf.sprintf
-                 "Expected %d arguments but given %d"
+                 "Function \"%s\" expects %d arguments but %d was given"
+                 c.func
                  (List.length tl)
                  (List.length c.args)
              , c.pos ));
-      ( Call
-          ( c.func
-          , List.map2
-              (fun t e ->
-                let e2, t2 = analyze_expr env ua t e in
-                if t2 = t
-                then e2
-                else
-                  errt
-                    t
-                    t2
-                    (match e with
-                    | Syntax.Val v -> v.pos
-                    | Syntax.Var v -> v.pos
-                    | Syntax.Call c -> c.pos))
-              tl
-              c.args )
-      , ret_t )
+      let args =
+        List.map2
+          (fun t e ->
+            let e2, t2 = analyze_expr env ua t e in
+            if t2 = t
+            then e2
+            else
+              errt
+                t
+                t2
+                (match e with
+                | Syntax.Val v -> v.pos
+                | Syntax.Var v -> v.pos
+                | Syntax.Call c -> c.pos))
+          tl
+          c.args
+      in
+      Call (c.func, args), ret_t
     | _ -> raise (SemanticsError ("\"" ^ c.func ^ "\" isn't a function", c.pos)))
 ;;
 
