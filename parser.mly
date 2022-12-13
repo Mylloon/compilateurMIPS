@@ -12,11 +12,13 @@
 %token Lbracedeb Lbracefin
 %token Lpardeb Lparfin Lcomma
 %token Ladd Lsub Lmul Ldiv
+%token Lif Lelse
 
 %left Ladd Lsub Lmul Ldiv
 
 %left Lbracedeb Lparfin Lbracefin Lreturn
 %left Ltype Lbool Lint Lvar Lstr
+%left Lif
 
 %start prog
 
@@ -86,6 +88,12 @@ instr:
   /* return x; */
   | Lreturn ; e = expr ; Lsc { [ Return { expr = e ; pos = $startpos } ] }
 
+  /* return; */
+  | Lreturn ; Lsc {
+    [ Return { expr = Val { value = Void ; pos = $startpos }
+             ; pos = $startpos } ]
+    }
+
   /* type v; */
   | t = Ltype ; v = Lvar ; Lsc {
     [ Decl { name = v ; type_t = t ; pos = $startpos(t) } ]
@@ -105,6 +113,16 @@ instr:
   /* e; */
   | e = expr ; Lsc {
     [ Do { expr = e ; pos = $startpos} ]
+  }
+
+  /* if (e) {} else {} */
+  | Lif ; Lpardeb ; e = expr ; Lparfin ; b1 = block ; Lelse ; b2 = block {
+    [ Cond { expr = e ; if_b = b1 ; else_b = b2 ; pos = $startpos } ]
+  }
+
+  /* if (e) {} */
+  | Lif ; Lpardeb ; e = expr ; Lparfin ; b = block {
+    [ Cond { expr = e ; if_b = b ; else_b = [] ; pos = $startpos } ]
   }
 
 expr:

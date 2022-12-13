@@ -45,12 +45,18 @@ module Syntax = struct
         { expr : expr
         ; pos : Lexing.position
         }
+    | Cond of
+        { expr : expr
+        ; if_b : block
+        ; else_b : block
+        ; pos : Lexing.position
+        }
     | Return of
         { expr : expr
         ; pos : Lexing.position
         }
 
-  type block = instr list
+  and block = instr list
 
   type arg =
     | Arg of
@@ -104,9 +110,11 @@ module IR (P : Parameters) = struct
     | Decl of ident
     | Assign of ident * expr
     | Do of expr
+    | Cond of expr * block * block
     | Return of expr
 
-  type block = instr list
+  and block = instr list
+
   type def = Func of ident * ident list * block
   type prog = def list
 end

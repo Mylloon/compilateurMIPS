@@ -20,6 +20,8 @@ rule token = parse
   | "bool"        { Ltype (Bool_t) }
   | "void"        { Ltype (Void_t) }
   | "str"         { Ltype (Str_t) }
+  | "if"          { Lif }
+  | "else"        { Lelse }
   | '{'           { Lbracedeb }
   | '}'           { Lbracefin }
   | '('           { Lpardeb }

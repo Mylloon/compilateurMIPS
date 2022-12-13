@@ -36,18 +36,32 @@ let rec compile_expr env = function
     else [ Jal (puf ^ f); Addi (SP, SP, 4 * List.length args) ]
 ;;
 
-let compile_instr info = function
+let rec compile_instr info = function
   | Decl v ->
     { info with env = Env.add v (Mem (FP, -info.fpo)) info.env; fpo = info.fpo + 4 }
   | Assign (v, e) ->
     { info with
       asm = info.asm @ compile_expr info.env e @ [ Sw (V0, Env.find v info.env) ]
     }
+  | Cond (e, ib, eb) ->
+    let uniq = string_of_int info.cnt in
+    let cib = compile_block { info with asm = []; cnt = info.cnt + 1 } ib in
+    let ceb = compile_block { info with asm = []; cnt = cib.cnt } eb in
+    { info with
+      asm =
+        info.asm
+        @ compile_expr info.env e
+        @ [ Beqz (V0, "else" ^ uniq) ]
+        @ cib.asm
+        @ [ B ("endif" ^ uniq); Label ("else" ^ uniq) ]
+        @ ceb.asm
+        @ [ Label ("endif" ^ uniq) ]
+    ; cnt = ceb.cnt
+    }
   | Do e -> { info with asm = info.asm @ compile_expr info.env e }
   | Return e -> { info with asm = info.asm @ compile_expr info.env e @ [ B info.ret ] }
-;;
 
-let rec compile_block info = function
+and compile_block info = function
   | [] -> info
   | i :: b -> compile_block (compile_instr info i) b
 ;;

@@ -14,7 +14,7 @@ let analyze_value = function
 let rec analyze_expr env ua t = function
   | Syntax.Val v ->
     let v2, new_t = analyze_value v.value in
-    if new_t != t then errt t new_t v.pos;
+    if new_t != t && t != Magic_t then errt t new_t v.pos;
     Val v2, new_t
   | Syntax.Var v ->
     if not (Env.mem v.name env)
@@ -58,7 +58,7 @@ let rec analyze_expr env ua t = function
     | _ -> raise (SemanticsError ("\"" ^ c.func ^ "\" isn't a function", c.pos)))
 ;;
 
-let analyze_instr env ua ret_t = function
+let rec analyze_instr env ua ret_t = function
   | Syntax.Decl d -> Decl d.name, Env.add d.name d.type_t env, [ d.name ] @ ua
   | Syntax.Assign a ->
     if not (Env.mem a.var env)
@@ -68,14 +68,19 @@ let analyze_instr env ua ret_t = function
   | Syntax.Do d ->
     let ae, _ = analyze_expr env ua Magic_t d.expr in
     Do ae, env, []
+  | Syntax.Cond c ->
+    let cond, _ = analyze_expr env ua Bool_t c.expr in
+    let if_b, _ = analyze_block env ua Magic_t c.pos c.if_b in
+    let else_b, _ = analyze_block env ua Magic_t c.pos c.else_b in
+    Cond (cond, if_b, else_b), env, []
   | Syntax.Return r ->
     let ae, _ = analyze_expr env ua ret_t r.expr in
     Return ae, env, []
-;;
 
-let rec analyze_block env ua ret_t pos = function
+and analyze_block env ua ret_t pos = function
   | [] ->
-    if ret_t != Void_t then warn "Non-void function without return" pos;
+    if ret_t != Void_t && ret_t != Magic_t
+    then warn "Non-void function without return" pos;
     [], ua
   | instr :: new_block ->
     let new_instr, new_env, ua1 = analyze_instr env ua ret_t instr in
