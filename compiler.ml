@@ -12,6 +12,7 @@ type info =
   }
 
 let puf = "f_" (* prefix user function *)
+let cnt_inline = ref (-1)
 
 let compile_value = function
   | Void -> [ Li (V0, 0) ]
@@ -29,10 +30,17 @@ let rec compile_expr env = function
         (fun a -> compile_expr env a @ [ Addi (SP, SP, -4); Sw (V0, Mem (SP, 0)) ])
         args
     in
+    let uniq =
+      if List.mem f Baselib.builtins_special
+      then (
+        incr cnt_inline;
+        string_of_int !cnt_inline)
+      else ""
+    in
     List.flatten ca
     @
-    if Env.mem f Baselib.builtins
-    then Env.find f Baselib.builtins
+    if Env.mem f (Baselib.builtins uniq)
+    then Env.find f (Baselib.builtins uniq)
     else [ Jal (puf ^ f); Addi (SP, SP, 4 * List.length args) ]
 ;;
 

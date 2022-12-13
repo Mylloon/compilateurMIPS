@@ -34,7 +34,10 @@ rule token = parse
   | '-'           { Lsub }
   | '*'           { Lmul }
   | '/'           { Ldiv }
-  | '<'           { Lbig }
+  | '<'           { Lsmaller }
+  | '>'           { Lbigger }
+  | "=="          { Leq }
+  | "!="          { Lneq }
   | '"'           { read_string (Buffer.create 16) lexbuf }
   | ident as i    { Lvar i }
   | '#'           { comment lexbuf }

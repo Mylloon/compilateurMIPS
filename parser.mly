@@ -11,10 +11,10 @@
 %token Lend Lassign Lsc Lreturn
 %token Lbracedeb Lbracefin
 %token Lpardeb Lparfin Lcomma
-%token Ladd Lsub Lmul Ldiv Lbig
+%token Ladd Lsub Lmul Ldiv Lbigger Lsmaller Leq Lneq
 %token Lif Lelse Lwhile
 
-%left Ladd Lsub Lmul Ldiv Lbig
+%left Ladd Lsub Lmul Ldiv Lbigger Lsmaller Leq Lneq
 
 %left Lbracedeb Lparfin Lbracefin Lreturn
 %left Ltype Lbool Lint Lvar Lstr
@@ -172,8 +172,23 @@ expr:
   }
 
   /* e < e */
-  | a = expr ; Lbig ; b = expr {
+  | a = expr ; Lsmaller ; b = expr {
     Call { func = "%big" ; args = [ a ; b ] ; pos = $startpos($2) }
+  }
+
+  /* e > e */
+  | a = expr ; Lbigger ; b = expr {
+    Call { func = "%sml" ; args = [ a ; b ] ; pos = $startpos($2) }
+  }
+
+  /* e == e */
+  | a = expr ; Leq ; b = expr {
+    Call { func = "%equ" ; args = [ a ; b ] ; pos = $startpos($2) }
+  }
+
+  /* e != e */
+  | a = expr ; Lneq ; b = expr {
+    Call { func = "%neq" ; args = [ a ; b ] ; pos = $startpos($2) }
   }
 
   /* function(a */
