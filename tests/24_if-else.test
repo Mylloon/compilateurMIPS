@@ -1,0 +1,9 @@
+void main () {
+    bool cab = true;
+    bool a = cab;
+    if (a) {
+        puts("a est vraie\n");
+    } else {
+        puts("a est fausse\n");
+    }
+}
