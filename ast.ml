@@ -51,6 +51,11 @@ module Syntax = struct
         ; else_b : block
         ; pos : Lexing.position
         }
+    | Loop of
+        { expr : expr
+        ; block : block
+        ; pos : Lexing.position
+        }
     | Return of
         { expr : expr
         ; pos : Lexing.position
@@ -111,6 +116,7 @@ module IR (P : Parameters) = struct
     | Assign of ident * expr
     | Do of expr
     | Cond of expr * block * block
+    | Loop of expr * block
     | Return of expr
 
   and block = instr list

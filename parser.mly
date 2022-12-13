@@ -11,14 +11,14 @@
 %token Lend Lassign Lsc Lreturn
 %token Lbracedeb Lbracefin
 %token Lpardeb Lparfin Lcomma
-%token Ladd Lsub Lmul Ldiv
-%token Lif Lelse
+%token Ladd Lsub Lmul Ldiv Lbig
+%token Lif Lelse Lwhile
 
-%left Ladd Lsub Lmul Ldiv
+%left Ladd Lsub Lmul Ldiv Lbig
 
 %left Lbracedeb Lparfin Lbracefin Lreturn
 %left Ltype Lbool Lint Lvar Lstr
-%left Lif
+%left Lif Lwhile
 
 %start prog
 
@@ -125,6 +125,11 @@ instr:
     [ Cond { expr = e ; if_b = b ; else_b = [] ; pos = $startpos } ]
   }
 
+  /* while (e) {} */
+  | Lwhile ; Lpardeb ; e = expr ; Lparfin ; b = block {
+    [ Loop { expr = e ; block = b ; pos = $startpos } ]
+  }
+
 expr:
   /* int */
   | n = Lint {
@@ -164,6 +169,11 @@ expr:
   /* e / e */
   | a = expr ; Ldiv ; b = expr {
     Call { func = "%div" ; args = [ a ; b ] ; pos = $startpos($2) }
+  }
+
+  /* e < e */
+  | a = expr ; Lbig ; b = expr {
+    Call { func = "%big" ; args = [ a ; b ] ; pos = $startpos($2) }
   }
 
   /* function(a */

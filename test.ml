@@ -20,6 +20,7 @@ let debug_parser oc parsed =
     | Syntax.Do d -> "Do (" ^ fmt_e d.expr ^ ")"
     | Syntax.Cond c ->
       "Cond (" ^ fmt_e c.expr ^ ", " ^ fmt_b c.if_b ^ ", " ^ fmt_b c.else_b ^ ")"
+    | Syntax.Loop l -> "Loop (" ^ fmt_e l.expr ^ ", " ^ fmt_b l.block ^ ")"
     | Syntax.Return d -> "Return (" ^ fmt_e d.expr ^ ")"
   and fmt_b b = " [ " ^ String.concat "\n ; " (List.map fmt_i b) ^ "\n ]"
   and fmt_f = function
@@ -59,6 +60,7 @@ let debug_semantics oc ast =
     | Assign (v, e) -> "Assign (\"" ^ v ^ "\", " ^ fmt_e e ^ ")"
     | Do e -> "Do (" ^ fmt_e e ^ ")"
     | Cond (c, i, e) -> "Cond (" ^ fmt_e c ^ ", " ^ fmt_b i ^ ", " ^ fmt_b e ^ ")"
+    | Loop (c, b) -> "Loop (" ^ fmt_e c ^ ", " ^ fmt_b b ^ ")"
     | Return e -> "Return (" ^ fmt_e e ^ ")"
   and fmt_b b = "[ " ^ String.concat "\n; " (List.map fmt_i b) ^ " ]"
   and fmt_f = function

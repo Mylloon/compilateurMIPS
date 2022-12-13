@@ -73,6 +73,10 @@ let rec analyze_instr env ua ret_t = function
     let if_b, _ = analyze_block env ua Magic_t c.pos c.if_b in
     let else_b, _ = analyze_block env ua Magic_t c.pos c.else_b in
     Cond (cond, if_b, else_b), env, []
+  | Syntax.Loop l ->
+    let cond, _ = analyze_expr env ua Bool_t l.expr in
+    let block, _ = analyze_block env ua Magic_t l.pos l.block in
+    Loop (cond, block), env, []
   | Syntax.Return r ->
     let ae, _ = analyze_expr env ua ret_t r.expr in
     Return ae, env, []

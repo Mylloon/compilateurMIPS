@@ -50,12 +50,14 @@ type instr =
   | Mul of reg * reg * reg
   | Sub of reg * reg * reg
   | Div of reg * reg * reg
+  | Slt of reg * reg * reg
   | Syscall
   | B of label
   | Beq of reg * reg * label
   | Bne of reg * reg * label
   | Beqz of reg * label
   | Jal of label
+  | J of label
   | Jr of reg
 
 type directive = Asciiz of string
@@ -136,6 +138,8 @@ let fmt_instr ?(indent = "  ") = function
     Printf.sprintf "%ssub %s, %s, %s" indent (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
   | Div (rd, rs, rt) ->
     Printf.sprintf "%sdiv %s, %s, %s" indent (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
+  | Slt (rd, rs, rt) ->
+    Printf.sprintf "%sslt %s, %s, %s" indent (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
   | Syscall -> Printf.sprintf "%ssyscall" indent
   | B l -> Printf.sprintf "%sb %s" indent l
   | Beq (rs, rt, l) ->
@@ -144,6 +148,7 @@ let fmt_instr ?(indent = "  ") = function
     Printf.sprintf "%sbne %s, %s, %s" indent (fmt_reg rs) (fmt_reg rt) l
   | Beqz (r, l) -> Printf.sprintf "%sbeqz %s, %s" indent (fmt_reg r) l
   | Jal l -> Printf.sprintf "%sjal %s" indent l
+  | J l -> Printf.sprintf "%sj %s" indent l
   | Jr r -> Printf.sprintf "%sjr %s" indent (fmt_reg r)
 ;;
 

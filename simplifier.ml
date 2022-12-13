@@ -39,6 +39,10 @@ let collect_constant_strings code =
       let ib2, ccs2 = ccs_block ib in
       let eb2, ccs3 = ccs_block eb in
       IR2.Cond (e2, ib2, eb2), List.flatten [ ccs; ccs2; ccs3 ]
+    | IR1.Loop (e, b) ->
+      let e2, ccs = ccs_expr e in
+      let b2, ccs2 = ccs_block b in
+      IR2.Loop (e2, b2), List.flatten [ ccs; ccs2 ]
     | IR1.Return e ->
       let e2, ccs = ccs_expr e in
       IR2.Return e2, ccs

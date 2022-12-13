@@ -22,6 +22,7 @@ rule token = parse
   | "str"         { Ltype (Str_t) }
   | "if"          { Lif }
   | "else"        { Lelse }
+  | "while"       { Lwhile }
   | '{'           { Lbracedeb }
   | '}'           { Lbracefin }
   | '('           { Lpardeb }
@@ -33,6 +34,7 @@ rule token = parse
   | '-'           { Lsub }
   | '*'           { Lmul }
   | '/'           { Ldiv }
+  | '<'           { Lbig }
   | '"'           { read_string (Buffer.create 16) lexbuf }
   | ident as i    { Lvar i }
   | '#'           { comment lexbuf }

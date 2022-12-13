@@ -58,6 +58,20 @@ let rec compile_instr info = function
         @ [ Label ("endif" ^ uniq) ]
     ; cnt = ceb.cnt
     }
+  | Loop (e, b) ->
+    let uniq = string_of_int info.cnt in
+    let cb = compile_block { info with asm = []; cnt = info.cnt + 1 } b in
+    { info with
+      asm =
+        info.asm
+        @ [ Label ("while" ^ uniq) ]
+        @ compile_expr info.env e
+        @ [ Beqz (V0, "endwhile" ^ uniq) ]
+        @ cb.asm
+        @ [ J ("while" ^ uniq) ]
+        @ [ Label ("endwhile" ^ uniq) ]
+    ; cnt = cb.cnt
+    }
   | Do e -> { info with asm = info.asm @ compile_expr info.env e }
   | Return e -> { info with asm = info.asm @ compile_expr info.env e @ [ B info.ret ] }
 
