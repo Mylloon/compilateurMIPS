@@ -43,6 +43,7 @@ and comment = parse
 
 and read_string buffer = parse
   | '"'           { Lstr (Buffer.contents buffer) }
+  | '\\' 'n'      { Buffer.add_string buffer "\\n"; read_string buffer lexbuf }
   | [^ '"' '\\']+ { Buffer.add_string buffer (Lexing.lexeme lexbuf)
                   ; read_string buffer lexbuf
                   }
