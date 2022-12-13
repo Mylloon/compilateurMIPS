@@ -24,6 +24,8 @@ let rec analyze_expr env ua t = function
     if new_t != t then errt t new_t v.pos;
     Var v.name, new_t
   | Syntax.Call c ->
+    if not (Env.mem c.func env)
+    then raise (SemanticsError ("Unbound function \"" ^ c.func ^ "\"", c.pos));
     (match Env.find c.func env with
     | Func_t (ret_t, tl) ->
       if ret_t != t && t != Magic_t then errt ret_t t c.pos;
@@ -97,13 +99,25 @@ and analyze_block env ua ret_t pos = function
 
 let analyze_func env ua = function
   | Syntax.Func f ->
-    let rec add_args env = function
-      | [] -> env
-      | h :: t ->
-        (match h with
-        | Syntax.Arg a -> add_args (Env.add a.name a.type_t env) t)
+    let add_fn =
+      let rec add_args env2 = function
+        | [] -> env2
+        | h :: t ->
+          (match h with
+          | Syntax.Arg a -> add_args (Env.add a.name a.type_t env2) t)
+      in
+      Env.add
+        f.func
+        (Func_t
+           ( f.type_t
+           , List.map
+               (fun a ->
+                 match a with
+                 | Syntax.Arg a -> a.type_t)
+               f.args ))
+        (add_args env f.args)
     in
-    let block, _ = analyze_block (add_args env f.args) ua f.type_t f.pos f.code in
+    let block, _ = analyze_block add_fn ua f.type_t f.pos f.code in
     ( Func
         ( f.func
         , List.map
