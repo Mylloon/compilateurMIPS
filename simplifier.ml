@@ -2,7 +2,7 @@ open Ast
 open Baselib
 
 let collect_constant_strings code =
-  let counter = ref 0 in
+  let counter = ref (-1) in
   let env = ref Env.empty in
   let ccs_value = function
     | V1.Void -> V2.Void, []
