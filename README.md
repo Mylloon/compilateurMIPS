@@ -27,7 +27,7 @@ $ make test
 
 -   [x] Type `int`
 -   [x] Type `bool`
--   [ ] Type `string`
+-   [x] Type `string`
 -   [x] Déclaration / assignation de variables
 -   [x] Librairie standard (multiplication, addition, comparateur, print, ...)
 -   [ ] Conditions
