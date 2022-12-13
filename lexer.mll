@@ -5,7 +5,7 @@
 }
 
 let alpha = ['a'-'z' 'A'-'Z']
-let num   = ['0'-'9']
+let num   = '-'? ['0'-'9']
 let bool  = "true" | "false"
 let ident = alpha (alpha | num | '-' | '_')*
 
