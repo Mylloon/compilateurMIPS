@@ -1,0 +1,11 @@
+void recursive (int n) {
+    if (n > 0) {
+        puti(n);
+        puts("\n");
+        recursive (n - 1);
+    }
+}
+
+void main () {
+    recursive(5);
+}

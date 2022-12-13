@@ -1,0 +1,6 @@
+void main () {
+    while (1) { # Error on line 2 col 11: Expected bool but given int.
+                # Requiert le type bool, pas de convertion implicite
+        return;
+    }
+}

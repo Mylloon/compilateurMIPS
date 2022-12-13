@@ -1,0 +1,6 @@
+void main () {
+    if (1) { # Error on line 2 col 8: Expected bool but given int.
+             # Requiert le type bool, pas de convertion implicite
+        return;
+    }
+}

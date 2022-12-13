@@ -1,0 +1,8 @@
+void main () {
+    puti(1312);
+    puts("\n");
+    return;
+
+    # Ce message ne s'affichera pas
+    puts(":)\n");
+}
