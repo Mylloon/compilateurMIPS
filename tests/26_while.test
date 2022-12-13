@@ -1,0 +1,14 @@
+void affiche(int i) {
+    puti(i);
+    puts("\n");
+}
+
+void main () {
+    int a = 0;
+    while (a < 10) {
+        affiche(a);
+        a = a + 1;
+    }
+
+    affiche(a);
+}
