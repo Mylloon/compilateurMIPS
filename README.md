@@ -30,7 +30,7 @@ $ make test
 -   [x] Type `string`
 -   [x] Déclaration / assignation de variables
 -   [x] Librairie standard (multiplication, addition, comparateur, print, ...)
--   [ ] Conditions
+-   [x] Conditions
 -   [ ] Boucles
 -   [x] Fonctions utilisateurs (arguments et valeur de retour typé)
     <!-- -   [ ] Allocation mémoire (`malloc`) -->
