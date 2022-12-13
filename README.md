@@ -33,10 +33,8 @@ $ make test
 -   [x] Conditions
 -   [x] Boucles
 -   [x] Fonctions utilisateurs récursives (arguments et valeur de retour typé)
-    <!-- -   [ ] Allocation mémoire (`malloc`) -->
-    <!-- -   [ ] Pointeurs -->
-    <!-- -   [ ] Listes + fonctions écrites dans notre language pour gérer ses listes -->
-    <!-- -   [ ] Structures -->
+-   [ ] Allocation mémoire (`malloc`)
+-   [ ] Pointeurs
 
 ### Améliorations
 
