@@ -11,6 +11,8 @@ type info =
   ; ret : string (* Return *)
   }
 
+let puf = "f_" (* prefix user function *)
+
 let compile_value = function
   | Void -> [ Li (V0, 0) ]
   | Int n -> [ Li (V0, n) ]
@@ -31,7 +33,7 @@ let rec compile_expr env = function
     @
     if Env.mem f Baselib.builtins
     then Env.find f Baselib.builtins
-    else [ Jal f; Addi (SP, SP, 4 * List.length args) ]
+    else [ Jal (puf ^ f); Addi (SP, SP, 4 * List.length args) ]
 ;;
 
 let compile_instr info = function
@@ -65,8 +67,9 @@ let compile_def (Func (name, args, body)) counter =
       }
       body
   in
+  let lbl_puf = if name = "main" then "" else puf in
   ( compiled.cnt
-  , [ Label name
+  , [ Label (lbl_puf ^ name)
     ; Addi (SP, SP, -compiled.fpo)
     ; Sw (RA, Mem (SP, compiled.fpo - 4))
     ; Sw (FP, Mem (SP, compiled.fpo - 8))
