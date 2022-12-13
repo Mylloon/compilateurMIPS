@@ -1,33 +1,33 @@
 type reg =
-  | Zero (* Toujours à zéro *)
-  | V0 (* Valeurs de retours *)
-  | V1 (* .................. *)
-  | A0 (* Premiers arguments des fonctions *)
-  | A1 (* ................................ *)
-  | A2 (* ................................ *)
-  | A3 (* ................................ *)
-  | T0 (* Registres temporaires *)
-  | T1 (* ..................... *)
-  | T2 (* ..................... *)
-  | T3 (* ..................... *)
-  | T4 (* ..................... *)
-  | T5 (* ..................... *)
-  | T6 (* ..................... *)
-  | T7 (* ..................... *)
-  | T8 (* ..................... *)
-  | T9 (* ..................... *)
-  | S0 (* Registres sauvegardés *)
-  | S1 (* ..................... *)
-  | S2 (* ..................... *)
-  | S3 (* ..................... *)
-  | S4 (* ..................... *)
-  | S5 (* ..................... *)
-  | S6 (* ..................... *)
-  | S7 (* ..................... *)
-  | GP (* Global pointer *)
-  | SP (* Stack pointer *)
-  | FP (* Frame pointer *)
-  | RA (* Adresse de retour *)
+  | Zero
+  | V0
+  | V1
+  | A0
+  | A1
+  | A2
+  | A3
+  | T0
+  | T1
+  | T2
+  | T3
+  | T4
+  | T5
+  | T6
+  | T7
+  | T8
+  | T9
+  | S0
+  | S1
+  | S2
+  | S3
+  | S4
+  | S5
+  | S6
+  | S7
+  | GP
+  | SP
+  | FP
+  | RA
 
 type label = string
 
@@ -41,10 +41,7 @@ type instr =
   | La of reg * loc
   | Sw of reg * loc
   | Lw of reg * loc
-  | Sb of reg * loc
-  | Lb of reg * loc
   | Move of reg * reg
-  | Neg of reg * reg
   | Addi of reg * reg * int
   | Add of reg * reg * reg
   | Mul of reg * reg * reg
@@ -53,8 +50,6 @@ type instr =
   | Slt of reg * reg * reg
   | Syscall
   | B of label
-  | Beq of reg * reg * label
-  | Bne of reg * reg * label
   | Beqz of reg * label
   | Jal of label
   | J of label
@@ -70,12 +65,8 @@ type asm =
 
 module Syscall = struct
   let print_int = 1
-  let print_float = 2
-  let print_double = 3
   let print_str = 4
   let read_int = 5
-  let read_float = 6
-  let read_double = 7
   let read_str = 8
   let sbrk = 9
   let exit = 10
@@ -124,10 +115,7 @@ let fmt_instr ?(indent = "  ") = function
   | La (r, a) -> Printf.sprintf "%sla %s, %s" indent (fmt_reg r) (fmt_loc a)
   | Sw (r, a) -> Printf.sprintf "%ssw %s, %s" indent (fmt_reg r) (fmt_loc a)
   | Lw (r, a) -> Printf.sprintf "%slw %s, %s" indent (fmt_reg r) (fmt_loc a)
-  | Sb (r, a) -> Printf.sprintf "%ssb %s, %s" indent (fmt_reg r) (fmt_loc a)
-  | Lb (r, a) -> Printf.sprintf "%slb %s, %s" indent (fmt_reg r) (fmt_loc a)
   | Move (rd, rs) -> Printf.sprintf "%smove %s, %s" indent (fmt_reg rd) (fmt_reg rs)
-  | Neg (r, a) -> Printf.sprintf "%sneg %s, %s" indent (fmt_reg r) (fmt_reg a)
   | Addi (rd, rs, i) ->
     Printf.sprintf "%saddi %s, %s, %d" indent (fmt_reg rd) (fmt_reg rs) i
   | Add (rd, rs, rt) ->
@@ -142,10 +130,6 @@ let fmt_instr ?(indent = "  ") = function
     Printf.sprintf "%sslt %s, %s, %s" indent (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
   | Syscall -> Printf.sprintf "%ssyscall" indent
   | B l -> Printf.sprintf "%sb %s" indent l
-  | Beq (rs, rt, l) ->
-    Printf.sprintf "%sbeq %s, %s, %s" indent (fmt_reg rs) (fmt_reg rt) l
-  | Bne (rs, rt, l) ->
-    Printf.sprintf "%sbne %s, %s, %s" indent (fmt_reg rs) (fmt_reg rt) l
   | Beqz (r, l) -> Printf.sprintf "%sbeqz %s, %s" indent (fmt_reg r) l
   | Jal l -> Printf.sprintf "%sjal %s" indent l
   | J l -> Printf.sprintf "%sj %s" indent l
