@@ -31,7 +31,7 @@ $ make test
 -   [x] Déclaration / assignation de variables
 -   [x] Librairie standard (multiplication, addition, comparateur, print, ...)
 -   [x] Conditions
--   [ ] Boucles
+-   [x] Boucles
 -   [x] Fonctions utilisateurs (arguments et valeur de retour typé)
     <!-- -   [ ] Allocation mémoire (`malloc`) -->
     <!-- -   [ ] Pointeurs -->
