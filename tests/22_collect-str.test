@@ -1,0 +1,17 @@
+int main () {
+    puts("Enter a number: ");
+    int a = geti();
+
+    puts("Enter a number: ");
+    int b = geti();
+
+    puts("The sum of your numbers is: ");
+    puti(a + b);
+    puts("\n");
+
+    puts("The product of your numbers is: ");
+    puti(a * b);
+    puts("\n");
+
+    return 0;
+}
