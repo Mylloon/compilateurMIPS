@@ -1,0 +1,17 @@
+void countdown (int n) {
+    if (n != 0) {
+        puti(n);
+        puts("\n");
+        countdown(n - 1);
+    }
+    else {
+        puts("BOUM!\n");
+    }
+}
+
+int main () {
+    puts("Count from? ");
+    countdown(geti());
+
+    return 0;
+}
