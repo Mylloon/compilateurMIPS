@@ -1,0 +1,12 @@
+int factloop (int n) {
+    int r = 1;
+    while (n > 0) {
+        r = n * r;
+        n = n - 1;
+    }
+    return r;
+}
+
+void main () {
+    puti(factloop(10));
+}
