@@ -1,0 +1,14 @@
+void test (int a, int b, int c, int d) {
+    puti(a);
+    puts(" - ");
+    puti(b);
+    puts(" - ");
+    puti(c);
+    puts(" - ");
+    puti(d);
+    puts("\n");
+}
+
+void main () {
+    test(1, 2, 3, 4);
+}
