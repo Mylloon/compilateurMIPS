@@ -4,31 +4,38 @@ open Ast.V1
 open Baselib
 open Errors
 
-let analyze_value = function
+let rec analyze_value = function
   | Syntax.Void -> Void, Void_t
   | Syntax.Int n -> Int n, Int_t
   | Syntax.Bool b -> Bool b, Bool_t
   | Syntax.Str s -> Str s, Str_t
+  | Syntax.Ptr v ->
+    let v2, t = analyze_value v in
+    Ptr 0, Ptr_t t
 ;;
 
 let rec analyze_expr env ua t = function
   | Syntax.Val v ->
     let v2, new_t = analyze_value v.value in
-    if new_t != t && t != Magic_t then errt t new_t v.pos;
+    (match t with
+    | Ptr_t t2 -> if new_t != t && t2 != Magic_t then errt t new_t v.pos
+    | _ -> if new_t != t && t != Magic_t then errt t new_t v.pos);
     Val v2, new_t
   | Syntax.Var v ->
     if not (Env.mem v.name env)
     then raise (SemanticsError ("Unbound variable \"" ^ v.name ^ "\"", v.pos));
     if List.mem v.name ua then warn ("Unassigned variable \"" ^ v.name ^ "\"") v.pos;
     let new_t = Env.find v.name env in
-    if new_t != t then errt t new_t v.pos;
+    if new_t != t && t != Magic_t then errt t new_t v.pos;
     Var v.name, new_t
   | Syntax.Call c ->
     if not (Env.mem c.func env)
     then raise (SemanticsError ("Unbound function \"" ^ c.func ^ "\"", c.pos));
     (match Env.find c.func env with
     | Func_t (ret_t, tl) ->
-      if ret_t != t && t != Magic_t then errt ret_t t c.pos;
+      (match ret_t with
+      | Ptr_t t2 -> if ret_t != t && t2 != Magic_t then errt ret_t t c.pos
+      | _ -> if ret_t != t && t != Magic_t then errt ret_t t c.pos);
       if List.length tl != List.length c.args
       then
         raise
@@ -63,10 +70,23 @@ let rec analyze_expr env ua t = function
 let rec analyze_instr env ua ret_t = function
   | Syntax.Decl d -> Decl d.name, Env.add d.name d.type_t env, [ d.name ] @ ua
   | Syntax.Assign a ->
-    if not (Env.mem a.var env)
-    then raise (SemanticsError ("Unbound variable \"" ^ a.var ^ "\"", a.pos));
-    let ae, et = analyze_expr env ua (Env.find a.var env) a.expr in
-    Assign (a.var, ae), env, List.filter (fun x -> x <> a.var) ua
+    let var, t =
+      match a.lval with
+      | Name i -> i, Env.find i env
+      | Addr e ->
+        let ae, t = analyze_expr env ua Magic_t e in
+        (match ae with
+        | Var v ->
+          ( v
+          , (match t with
+            | Ptr_t t -> t
+            | _ -> raise (SemanticsError ("Something went wrong", a.pos))) )
+        | _ -> raise (SemanticsError ("Can't assign to this address", a.pos)))
+    in
+    if not (Env.mem var env)
+    then raise (SemanticsError ("Unbound variable \"" ^ var ^ "\"", a.pos));
+    let ae, et = analyze_expr env ua t a.expr in
+    Assign (Name var, ae), env, List.filter (fun x -> x <> var) ua
   | Syntax.Do d ->
     let ae, _ = analyze_expr env ua Magic_t d.expr in
     Do ae, env, []

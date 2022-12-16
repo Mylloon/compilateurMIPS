@@ -9,14 +9,18 @@ let debug_parser oc parsed =
     | Syntax.Int d -> "Int " ^ string_of_int d
     | Syntax.Bool d -> "Bool " ^ string_of_bool d
     | Syntax.Str s -> "Str \"" ^ s ^ "\""
+    | Syntax.Ptr t -> "*" ^ fmt_v t
   and fmt_e = function
     | Syntax.Val d -> "Val (" ^ fmt_v d.value ^ ")"
     | Syntax.Var d -> "Var \"" ^ d.name ^ "\""
     | Syntax.Call d ->
       "Call (\"" ^ d.func ^ "\", [ " ^ String.concat " ; " (List.map fmt_e d.args) ^ " ])"
+  and fmt_lv = function
+    | Syntax.Name n -> "Name(\"" ^ n ^ "\")"
+    | Syntax.Addr e -> "Addr(" ^ fmt_e e ^ ")"
   and fmt_i = function
     | Syntax.Decl d -> "Decl(" ^ string_of_type_t d.type_t ^ ") \"" ^ d.name ^ "\""
-    | Syntax.Assign d -> "Assign (\"" ^ d.var ^ "\", " ^ fmt_e d.expr ^ ")"
+    | Syntax.Assign d -> "Assign (" ^ fmt_lv d.lval ^ ", " ^ fmt_e d.expr ^ ")"
     | Syntax.Do d -> "Do (" ^ fmt_e d.expr ^ ")"
     | Syntax.Cond c ->
       "Cond (" ^ fmt_e c.expr ^ ", " ^ fmt_b c.if_b ^ ", " ^ fmt_b c.else_b ^ ")"
@@ -50,6 +54,7 @@ let debug_semantics oc ast =
     | Int n -> "Int " ^ string_of_int n
     | Bool b -> "Bool " ^ string_of_bool b
     | Str s -> "Str \"" ^ s ^ "\""
+    | Ptr p -> "Ptr of " ^ fmt_v p
   and fmt_e = function
     | Val v -> "Val (" ^ fmt_v v ^ ")"
     | Var v -> "Var \"" ^ v ^ "\""
@@ -57,7 +62,14 @@ let debug_semantics oc ast =
       "Call (\"" ^ f ^ "\", [ " ^ String.concat " ; " (List.map fmt_e a) ^ " ])"
   and fmt_i = function
     | Decl v -> "Decl \"" ^ v ^ "\""
-    | Assign (v, e) -> "Assign (\"" ^ v ^ "\", " ^ fmt_e e ^ ")"
+    | Assign (lv, e) ->
+      "Assign (\""
+      ^ (match lv with
+        | Name v -> v
+        | Addr e -> fmt_e e)
+      ^ "\", "
+      ^ fmt_e e
+      ^ ")"
     | Do e -> "Do (" ^ fmt_e e ^ ")"
     | Cond (c, i, e) -> "Cond (" ^ fmt_e c ^ ", " ^ fmt_b i ^ ", " ^ fmt_b e ^ ")"
     | Loop (c, b) -> "Loop (" ^ fmt_e c ^ ", " ^ fmt_b b ^ ")"

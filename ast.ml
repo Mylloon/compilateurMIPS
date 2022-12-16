@@ -5,17 +5,19 @@ type type_t =
   | Bool_t
   | Str_t
   | Func_t of type_t * type_t list
+  | Ptr_t of type_t
+
+type ident = string
 
 module Syntax = struct
-  type ident = string
-
   type value =
     | Void
     | Int of int
     | Bool of bool
     | Str of string
+    | Ptr of expr
 
-  type expr =
+  and expr =
     | Val of
         { value : value
         ; pos : Lexing.position
@@ -30,6 +32,10 @@ module Syntax = struct
         ; pos : Lexing.position
         }
 
+  type lval =
+    | Name of ident
+    | Addr of expr
+
   type instr =
     | Decl of
         { name : ident
@@ -37,7 +43,7 @@ module Syntax = struct
         ; pos : Lexing.position
         }
     | Assign of
-        { var : ident
+        { lval : lval
         ; expr : expr
         ; pos : Lexing.position
         }
@@ -93,6 +99,7 @@ module V1 = struct
     | Int of int
     | Bool of bool
     | Str of string
+    | Ptr of int
 end
 
 module V2 = struct
@@ -101,19 +108,22 @@ module V2 = struct
     | Int of int
     | Bool of bool
     | Data of string
+    | Ptr of int
 end
 
 module IR (P : Parameters) = struct
-  type ident = string
-
   type expr =
     | Val of P.value
     | Var of ident
     | Call of ident * expr list
 
+  type lval =
+    | Name of ident
+    | Addr of expr
+
   type instr =
     | Decl of ident
-    | Assign of ident * expr
+    | Assign of lval * expr
     | Do of expr
     | Cond of expr * block * block
     | Loop of expr * block

@@ -26,6 +26,7 @@ let rec string_of_type_t = function
     ^ (if List.length a > 1 then ")" else "")
     ^ " -> "
     ^ string_of_type_t r
+  | Ptr_t t -> "*" ^ string_of_type_t t
 ;;
 
 let errt expected given pos =

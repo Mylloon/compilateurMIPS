@@ -4,7 +4,7 @@ open Baselib
 let collect_constant_strings code =
   let counter = ref (-1) in
   let env = ref Env.empty in
-  let ccs_value = function
+  let rec ccs_value = function
     | V1.Void -> V2.Void, []
     | V1.Bool b -> V2.Bool b, []
     | V1.Int n -> V2.Int n, []
@@ -16,6 +16,9 @@ let collect_constant_strings code =
         let lbl = "str" ^ string_of_int !counter in
         env := Env.add s lbl !env;
         V2.Data lbl, [ lbl, Mips.Asciiz s ])
+    | V1.Ptr p ->
+      let v2, ccs = ccs_value p in
+      V2.Ptr v2, [] @ ccs
   in
   let rec ccs_expr = function
     | IR1.Val v ->
@@ -26,11 +29,18 @@ let collect_constant_strings code =
       let args2 = List.map ccs_expr args in
       IR2.Call (fn, List.map fst args2), List.flatten (List.map snd args2)
   in
+  let ccs_lval = function
+    | IR1.Name v -> IR2.Name v, []
+    | IR1.Addr e ->
+      let e2, ccs = ccs_expr e in
+      IR2.Addr e2, ccs
+  in
   let rec ccs_instr = function
     | IR1.Decl v -> IR2.Decl v, []
     | IR1.Assign (lv, e) ->
+      let lv2, ccs2 = ccs_lval lv in
       let e2, ccs = ccs_expr e in
-      IR2.Assign (lv, e2), ccs
+      IR2.Assign (lv2, e2), ccs @ ccs2
     | IR1.Do e ->
       let e2, ccs = ccs_expr e in
       IR2.Do e2, ccs

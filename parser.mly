@@ -11,10 +11,10 @@
 %token Lend Lassign Lsc Lreturn
 %token Lbracedeb Lbracefin
 %token Lpardeb Lparfin Lcomma
-%token Ladd Lsub Lmul Ldiv Lbigger Lsmaller Leq Lneq
+%token Ladd Lsub Lstar Ldiv Lbigger Lsmaller Leq Lneq
 %token Lif Lelse Lwhile
 
-%left Ladd Lsub Lmul Ldiv Lbigger Lsmaller Leq Lneq
+%left Ladd Lsub Lstar Ldiv Lbigger Lsmaller Leq Lneq
 
 %left Lbracedeb Lparfin Lbracefin Lreturn
 %left Ltype Lbool Lint Lvar Lstr
@@ -94,20 +94,37 @@ instr:
              ; pos = $startpos } ]
     }
 
+  /* type *v; */
+  | t = Ltype ; Lstar ; v = Lvar ; Lsc {
+    [ Decl { name = v ; type_t = Ptr_t t ; pos = $startpos(t) } ]
+  }
+
   /* type v; */
   | t = Ltype ; v = Lvar ; Lsc {
     [ Decl { name = v ; type_t = t ; pos = $startpos(t) } ]
   }
+  /* type *v = e; */
+  | t = Ltype ; Lstar ; v = Lvar ; Lassign ; e = expr ; Lsc
+    { [ Decl { name = v ; type_t = Ptr_t t ; pos = $startpos(t) }
+    ; Assign { lval = Name v ; expr = e ; pos = $startpos(v) } ]
+    }
 
   /* type v = e; */
   | t = Ltype ; v = Lvar ; Lassign ; e = expr ; Lsc
     { [ Decl { name = v ; type_t = t ; pos = $startpos(t) }
-    ; Assign { var = v ; expr = e ; pos = $startpos(v) } ]
+    ; Assign { lval = Name v ; expr = e ; pos = $startpos(v) } ]
     }
+
+  /* *v = e; */
+  | Lstar; v = Lvar ; Lassign ; e = expr ; Lsc {
+    [ Assign { lval = Addr (Var { name = v ; pos = $startpos(v) })
+             ; expr = e
+             ; pos = $startpos(e) } ]
+  }
 
   /* v = e; */
   | v = Lvar ; Lassign ; e = expr ; Lsc {
-    [ Assign { var = v ; expr = e ; pos = $startpos($2) } ]
+    [ Assign { lval = Name v ; expr = e ; pos = $startpos($2) } ]
   }
 
   /* e; */
@@ -162,7 +179,7 @@ expr:
   }
 
   /* e * e */
-  | a = expr ; Lmul ; b = expr {
+  | a = expr ; Lstar ; b = expr {
     Call { func = "%mul" ; args = [ a ; b ] ; pos = $startpos($2) }
   }
 
@@ -189,6 +206,11 @@ expr:
   /* e != e */
   | a = expr ; Lneq ; b = expr {
     Call { func = "%neq" ; args = [ a ; b ] ; pos = $startpos($2) }
+  }
+
+  /* *e */
+  | Lstar; a = expr {
+    Call { func = "%deref" ; args = [ a ] ; pos = $startpos }
   }
 
   /* function(a */

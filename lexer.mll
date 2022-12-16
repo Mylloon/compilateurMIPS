@@ -32,7 +32,7 @@ rule token = parse
   | ';'           { Lsc }
   | '+'           { Ladd }
   | '-'           { Lsub }
-  | '*'           { Lmul }
+  | '*'           { Lstar }
   | '/'           { Ldiv }
   | '<'           { Lsmaller }
   | '>'           { Lbigger }

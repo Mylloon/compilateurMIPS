@@ -19,6 +19,7 @@ let compile_value = function
   | Int n -> [ Li (V0, n) ]
   | Bool b -> [ Li (V0, if b then 1 else 0) ]
   | Data l -> [ La (V0, Lbl l) ]
+  | Ptr p -> [ Li (V0, p) ]
 ;;
 
 let rec compile_expr env = function
@@ -47,9 +48,18 @@ let rec compile_expr env = function
 let rec compile_instr info = function
   | Decl v ->
     { info with env = Env.add v (Mem (FP, -info.fpo)) info.env; fpo = info.fpo + 4 }
-  | Assign (v, e) ->
+  | Assign (lv, e) ->
     { info with
-      asm = info.asm @ compile_expr info.env e @ [ Sw (V0, Env.find v info.env) ]
+      asm =
+        (info.asm
+        @ compile_expr info.env e
+        @
+        match lv with
+        | Name v -> [ Sw (V0, Env.find v info.env) ]
+        | Addr e ->
+          [ Addi (SP, SP, -4); Sw (V0, Mem (SP, 0)) ]
+          @ compile_expr info.env e
+          @ [ Lw (T0, Mem (SP, 0)); Addi (SP, SP, 4); Sw (T0, Mem (V0, 0)) ])
     }
   | Cond (e, ib, eb) ->
     let uniq = string_of_int info.cnt in
