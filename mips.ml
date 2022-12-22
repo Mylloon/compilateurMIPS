@@ -47,7 +47,12 @@ type instr =
   | Mul of reg * reg * reg
   | Sub of reg * reg * reg
   | Div of reg * reg * reg
+  | Seq of reg * reg * reg
+  | Sge of reg * reg * reg
+  | Sgt of reg * reg * reg
+  | Sle of reg * reg * reg
   | Slt of reg * reg * reg
+  | Sne of reg * reg * reg
   | Syscall
   | B of label
   | Beq of reg * reg * label
@@ -127,8 +132,18 @@ let fmt_instr ?(indent = "  ") = function
     Printf.sprintf "%ssub %s, %s, %s" indent (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
   | Div (rd, rs, rt) ->
     Printf.sprintf "%sdiv %s, %s, %s" indent (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
+  | Seq (rd, rs, rt) ->
+    Printf.sprintf "%sseq %s, %s, %s" indent (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
+  | Sge (rd, rs, rt) ->
+    Printf.sprintf "%ssge %s, %s, %s" indent (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
+  | Sgt (rd, rs, rt) ->
+    Printf.sprintf "%ssgt %s, %s, %s" indent (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
+  | Sle (rd, rs, rt) ->
+    Printf.sprintf "%ssle %s, %s, %s" indent (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
   | Slt (rd, rs, rt) ->
     Printf.sprintf "%sslt %s, %s, %s" indent (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
+  | Sne (rd, rs, rt) ->
+    Printf.sprintf "%ssne %s, %s, %s" indent (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
   | Syscall -> Printf.sprintf "%ssyscall" indent
   | B l -> Printf.sprintf "%sb %s" indent l
   | Beq (rs, rt, l) ->

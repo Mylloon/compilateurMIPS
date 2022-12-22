@@ -34,10 +34,12 @@ rule token = parse
   | '-'           { Lsub }
   | '*'           { Lmul }
   | '/'           { Ldiv }
-  | '<'           { Lsmaller }
-  | '>'           { Lbigger }
-  | "=="          { Leq }
-  | "!="          { Lneq }
+  | "=="          { Lseq }
+  | ">="          { Lsge }
+  | ">"           { Lsgt }
+  | "<="          { Lsle }
+  | "<"           { Lslt }
+  | "!="          { Lsne }
   | '"'           { read_string (Buffer.create 16) lexbuf }
   | ident as i    { Lvar i }
   | '#'           { comment lexbuf }

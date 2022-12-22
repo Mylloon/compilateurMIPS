@@ -11,10 +11,10 @@
 %token Lend Lassign Lsc Lreturn
 %token Lbracedeb Lbracefin
 %token Lpardeb Lparfin Lcomma
-%token Ladd Lsub Lmul Ldiv Lbigger Lsmaller Leq Lneq
+%token Ladd Lsub Lmul Ldiv Lseq Lsge Lsgt Lsle Lslt Lsne
 %token Lif Lelse Lwhile
 
-%left Ladd Lsub Lmul Ldiv Lbigger Lsmaller Leq Lneq
+%left Ladd Lsub Lmul Ldiv Lbigger Lseq Lsge Lsgt Lsle Lslt Lsne
 
 %left Lbracedeb Lparfin Lbracefin Lreturn
 %left Ltype Lbool Lint Lvar Lstr
@@ -171,24 +171,34 @@ expr:
     Call { func = "%div" ; args = [ a ; b ] ; pos = $startpos($2) }
   }
 
-  /* e < e */
-  | a = expr ; Lsmaller ; b = expr {
-    Call { func = "%big" ; args = [ a ; b ] ; pos = $startpos($2) }
+  /* e == e */
+  | a = expr ; Lseq ; b = expr {
+    Call { func = "%seq" ; args = [ a ; b ] ; pos = $startpos($2) }
+  }
+
+  /* e >= e */
+  | a = expr ; Lsge ; b = expr {
+    Call { func = "%sge" ; args = [ a ; b ] ; pos = $startpos($2) }
   }
 
   /* e > e */
-  | a = expr ; Lbigger ; b = expr {
-    Call { func = "%sml" ; args = [ a ; b ] ; pos = $startpos($2) }
+  | a = expr ; Lsgt ; b = expr {
+    Call { func = "%sgt" ; args = [ a ; b ] ; pos = $startpos($2) }
   }
 
-  /* e == e */
-  | a = expr ; Leq ; b = expr {
-    Call { func = "%equ" ; args = [ a ; b ] ; pos = $startpos($2) }
+  /* e <= e */
+  | a = expr ; Lsle ; b = expr {
+    Call { func = "%sle" ; args = [ a ; b ] ; pos = $startpos($2) }
+  }
+
+  /* e < e */
+  | a = expr ; Lslt ; b = expr {
+    Call { func = "%slt" ; args = [ a ; b ] ; pos = $startpos($2) }
   }
 
   /* e != e */
-  | a = expr ; Lneq ; b = expr {
-    Call { func = "%neq" ; args = [ a ; b ] ; pos = $startpos($2) }
+  | a = expr ; Lsne ; b = expr {
+    Call { func = "%sne" ; args = [ a ; b ] ; pos = $startpos($2) }
   }
 
   /* function(a */
