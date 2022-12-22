@@ -1,0 +1,6 @@
+void main () {
+    if ("mettez20svp") { # Error on line 2 col 20: Expected bool, int but given str.
+                         # les strings ne sont pas valides pour les conditions
+        return;
+    }
+}

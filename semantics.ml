@@ -14,21 +14,21 @@ let analyze_value = function
 let rec analyze_expr env ua t = function
   | Syntax.Val v ->
     let v2, new_t = analyze_value v.value in
-    if new_t != t && t != Magic_t then errt t new_t v.pos;
+    if (not (List.mem new_t t)) && not (List.mem Magic_t t) then errt t [ new_t ] v.pos;
     Val v2, new_t
   | Syntax.Var v ->
     if not (Env.mem v.name env)
     then raise (SemanticsError ("Unbound variable \"" ^ v.name ^ "\"", v.pos));
     if List.mem v.name ua then warn ("Unassigned variable \"" ^ v.name ^ "\"") v.pos;
     let new_t = Env.find v.name env in
-    if new_t != t then errt t new_t v.pos;
+    if not (List.mem new_t t) then errt t [ new_t ] v.pos;
     Var v.name, new_t
   | Syntax.Call c ->
     if not (Env.mem c.func env)
     then raise (SemanticsError ("Unbound function \"" ^ c.func ^ "\"", c.pos));
     (match Env.find c.func env with
     | Func_t (ret_t, tl) ->
-      if ret_t != t && t != Magic_t then errt ret_t t c.pos;
+      if (not (List.mem ret_t t)) && not (List.mem Magic_t t) then errt [ ret_t ] t c.pos;
       if List.length tl != List.length c.args
       then
         raise
@@ -41,14 +41,14 @@ let rec analyze_expr env ua t = function
              , c.pos ));
       let args =
         List.map2
-          (fun t e ->
-            let e2, t2 = analyze_expr env ua t e in
-            if t2 = t
+          (fun tt e ->
+            let e2, t2 = analyze_expr env ua [ tt ] e in
+            if t2 = tt
             then e2
             else
               errt
-                t
-                t2
+                [ tt ]
+                [ t2 ]
                 (match e with
                 | Syntax.Val v -> v.pos
                 | Syntax.Var v -> v.pos
@@ -65,22 +65,22 @@ let rec analyze_instr env ua ret_t = function
   | Syntax.Assign a ->
     if not (Env.mem a.var env)
     then raise (SemanticsError ("Unbound variable \"" ^ a.var ^ "\"", a.pos));
-    let ae, et = analyze_expr env ua (Env.find a.var env) a.expr in
+    let ae, et = analyze_expr env ua [ Env.find a.var env ] a.expr in
     Assign (a.var, ae), env, List.filter (fun x -> x <> a.var) ua
   | Syntax.Do d ->
-    let ae, _ = analyze_expr env ua Magic_t d.expr in
+    let ae, _ = analyze_expr env ua [ Magic_t ] d.expr in
     Do ae, env, []
   | Syntax.Cond c ->
-    let cond, _ = analyze_expr env ua Bool_t c.expr in
+    let cond, _ = analyze_expr env ua [ Bool_t; Int_t ] c.expr in
     let if_b, _ = analyze_block env ua Magic_t c.pos c.if_b in
     let else_b, _ = analyze_block env ua Magic_t c.pos c.else_b in
     Cond (cond, if_b, else_b), env, []
   | Syntax.Loop l ->
-    let cond, _ = analyze_expr env ua Bool_t l.expr in
+    let cond, _ = analyze_expr env ua [ Bool_t; Int_t ] l.expr in
     let block, _ = analyze_block env ua Magic_t l.pos l.block in
     Loop (cond, block), env, []
   | Syntax.Return r ->
-    let ae, _ = analyze_expr env ua ret_t r.expr in
+    let ae, _ = analyze_expr env ua [ ret_t ] r.expr in
     Return ae, env, []
 
 and analyze_block env ua ret_t pos = function

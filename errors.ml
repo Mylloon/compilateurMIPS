@@ -33,8 +33,8 @@ let errt expected given pos =
     (SemanticsError
        ( Printf.sprintf
            "Expected %s but given %s"
-           (string_of_type_t expected)
-           (string_of_type_t given)
+           (String.concat ", " (List.map string_of_type_t expected))
+           (String.concat ", " (List.map string_of_type_t given))
        , pos ))
 ;;
 

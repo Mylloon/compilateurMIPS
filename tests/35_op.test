@@ -1,0 +1,7 @@
+void main () {
+    if (1 && 3 < 4) {
+        puti(1);
+    } else {
+        puti(0);
+    }
+}

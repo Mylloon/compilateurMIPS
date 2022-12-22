@@ -1,0 +1,7 @@
+void main () {
+    while ("salut") { # Error on line 2 col 17: Expected bool, int but given str.
+                      # Comme les conditions, les strings peuvent pas être
+                      # des conditions
+        return;
+    }
+}
