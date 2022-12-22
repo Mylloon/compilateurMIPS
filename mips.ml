@@ -58,7 +58,6 @@ type instr =
   | Beq of reg * reg * label
   | Beqz of reg * label
   | Jal of label
-  | J of label
   | Jr of reg
 
 type directive = Asciiz of string
@@ -150,7 +149,6 @@ let fmt_instr ?(indent = "  ") = function
     Printf.sprintf "%sbeq %s, %s, %s" indent (fmt_reg rs) (fmt_reg rt) l
   | Beqz (r, l) -> Printf.sprintf "%sbeqz %s, %s" indent (fmt_reg r) l
   | Jal l -> Printf.sprintf "%sjal %s" indent l
-  | J l -> Printf.sprintf "%sj %s" indent l
   | Jr r -> Printf.sprintf "%sjr %s" indent (fmt_reg r)
 ;;
 

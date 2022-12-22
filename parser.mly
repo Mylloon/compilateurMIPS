@@ -14,7 +14,7 @@
 %token Ladd Lsub Lmul Ldiv Lseq Lsge Lsgt Lsle Lslt Lsne
 %token Lif Lelse Lwhile
 
-%left Ladd Lsub Lmul Ldiv Lbigger Lseq Lsge Lsgt Lsle Lslt Lsne
+%left Ladd Lsub Lmul Ldiv Lseq Lsge Lsgt Lsle Lslt Lsne
 
 %left Lbracedeb Lparfin Lbracefin Lreturn
 %left Ltype Lbool Lint Lvar Lstr
@@ -131,6 +131,11 @@ instr:
   }
 
 expr:
+  /* -int */
+  | Lsub ; n = Lint {
+    Val { value = Int (-n) ; pos = $startpos(n) }
+  }
+
   /* int */
   | n = Lint {
     Val { value = Int (n) ; pos = $startpos(n) }

@@ -68,7 +68,7 @@ let rec compile_instr info = function
         @ compile_expr info.env e
         @ [ Beqz (V0, "endwhile" ^ uniq) ]
         @ cb.asm
-        @ [ J ("while" ^ uniq) ]
+        @ [ B ("while" ^ uniq) ]
         @ [ Label ("endwhile" ^ uniq) ]
     ; cnt = cb.cnt
     }
