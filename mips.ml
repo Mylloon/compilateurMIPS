@@ -47,6 +47,7 @@ type instr =
   | Mul of reg * reg * reg
   | Sub of reg * reg * reg
   | Div of reg * reg * reg
+  | Abs of reg * reg
   | Seq of reg * reg * reg
   | Sge of reg * reg * reg
   | Sgt of reg * reg * reg
@@ -131,6 +132,7 @@ let fmt_instr ?(indent = "  ") = function
     Printf.sprintf "%ssub %s, %s, %s" indent (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
   | Div (rd, rs, rt) ->
     Printf.sprintf "%sdiv %s, %s, %s" indent (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
+  | Abs (rd, rs) -> Printf.sprintf "%sabs %s, %s" indent (fmt_reg rd) (fmt_reg rs)
   | Seq (rd, rs, rt) ->
     Printf.sprintf "%sseq %s, %s, %s" indent (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
   | Sge (rd, rs, rt) ->

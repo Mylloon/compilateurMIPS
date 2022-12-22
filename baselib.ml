@@ -18,6 +18,7 @@ let _types_ =
        ; "puti", Func_t (Void_t, [ Int_t ])
        ; "puts", Func_t (Void_t, [ Str_t ])
        ; "geti", Func_t (Int_t, [])
+       ; "abs", Func_t (Int_t, [ Int_t ])
        ])
 ;;
 
@@ -38,5 +39,6 @@ let builtins =
     ; "puti", [ Lw (A0, Mem (SP, 0)); Li (V0, Syscall.print_int); Syscall ]
     ; "puts", [ Lw (A0, Mem (SP, 0)); Li (V0, Syscall.print_str); Syscall ]
     ; "geti", [ Lw (A0, Mem (SP, 0)); Li (V0, Syscall.read_int); Syscall ]
+    ; "abs", [ Lw (T0, Mem (SP, 0)); Abs (V0, T0) ]
     ]
 ;;

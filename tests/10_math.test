@@ -1,4 +1,4 @@
 void main () {
-    int res = 13 * 100 + 20 - 8;
-    res = res * 2 / 2;
+    int res = 13 * -100 - 20 + 8;
+    res = abs(res * 2) / 2;
 }
