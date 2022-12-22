@@ -42,6 +42,7 @@ rule token = parse
   | "<"           { Lslt }
   | "!="          { Lsne }
   | '&'           { Land }
+  | '|'           { Lor }
   | '"'           { read_string (Buffer.create 16) lexbuf }
   | ident as i    { Lvar i }
   | '#'           { comment lexbuf }

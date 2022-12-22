@@ -56,6 +56,7 @@ type instr =
   | Slt of reg * reg * reg
   | Sne of reg * reg * reg
   | And of reg * reg * reg
+  | Or of reg * reg * reg
   | Syscall
   | B of label
   | Beq of reg * reg * label
@@ -151,6 +152,8 @@ let fmt_instr ?(indent = "  ") = function
     Printf.sprintf "%ssne %s, %s, %s" indent (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
   | And (rd, rs, rt) ->
     Printf.sprintf "%sand %s, %s, %s" indent (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
+  | Or (rd, rs, rt) ->
+    Printf.sprintf "%sor %s, %s, %s" indent (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
   | Syscall -> Printf.sprintf "%ssyscall" indent
   | B l -> Printf.sprintf "%sb %s" indent l
   | Beq (rs, rt, l) ->

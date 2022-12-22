@@ -12,11 +12,11 @@
 %token Lbracedeb Lbracefin
 %token Lpardeb Lparfin Lcomma
 %token Ladd Lsub Lmul Ldiv Lrem Lseq Lsge Lsgt Lsle Lslt Lsne
-%token Land
+%token Land Lor
 %token Lif Lelse Lwhile
 
 %left Ladd Lsub Lmul Ldiv Lrem Lseq Lsge Lsgt Lsle Lslt Lsne
-%left Land
+%left Land Lor
 
 %left Lbracedeb Lparfin Lbracefin Lreturn
 %left Ltype Lbool Lint Lvar Lstr
@@ -216,6 +216,11 @@ expr:
   /* e && e */
   | a = expr ; Land ; Land ; b = expr {
     Call { func = "%and" ; args = [ a ; b ] ; pos = $startpos($2) }
+  }
+
+  /* e || e */
+  | a = expr ; Lor ; Lor ; b = expr {
+    Call { func = "%or" ; args = [ a ; b ] ; pos = $startpos($2) }
   }
 
   /* function(a */
