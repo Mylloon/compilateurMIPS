@@ -65,7 +65,7 @@ let rec analyze_instr env ua ret_t = function
   | Syntax.Assign a ->
     if not (Env.mem a.var env)
     then raise (SemanticsError ("Unbound variable \"" ^ a.var ^ "\"", a.pos));
-    let ae, et = analyze_expr env ua [ Env.find a.var env ] a.expr in
+    let ae, _ = analyze_expr env ua [ Env.find a.var env ] a.expr in
     Assign (a.var, ae), env, List.filter (fun x -> x <> a.var) ua
   | Syntax.Do d ->
     let ae, _ = analyze_expr env ua [ Magic_t ] d.expr in
