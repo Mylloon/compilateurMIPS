@@ -9,6 +9,7 @@ let _types_ =
        ; "%sub", Func_t (Int_t, [ Int_t; Int_t ])
        ; "%mul", Func_t (Int_t, [ Int_t; Int_t ])
        ; "%div", Func_t (Int_t, [ Int_t; Int_t ])
+       ; "%rem", Func_t (Int_t, [ Int_t; Int_t ])
        ; "%seq", Func_t (Bool_t, [ Int_t; Int_t ])
        ; "%sge", Func_t (Bool_t, [ Int_t; Int_t ])
        ; "%sgt", Func_t (Bool_t, [ Int_t; Int_t ])
@@ -30,6 +31,7 @@ let builtins =
     ; "%sub", [ Lw (T0, Mem (SP, 4)); Lw (T1, Mem (SP, 0)); Sub (V0, T0, T1) ]
     ; "%mul", [ Lw (T0, Mem (SP, 4)); Lw (T1, Mem (SP, 0)); Mul (V0, T0, T1) ]
     ; "%div", [ Lw (T0, Mem (SP, 4)); Lw (T1, Mem (SP, 0)); Div (V0, T0, T1) ]
+    ; "%rem", [ Lw (T0, Mem (SP, 4)); Lw (T1, Mem (SP, 0)); Rem (V0, T0, T1) ]
     ; "%seq", [ Lw (T0, Mem (SP, 4)); Lw (T1, Mem (SP, 0)); Seq (V0, T0, T1) ]
     ; "%sge", [ Lw (T0, Mem (SP, 4)); Lw (T1, Mem (SP, 0)); Sge (V0, T0, T1) ]
     ; "%sgt", [ Lw (T0, Mem (SP, 4)); Lw (T1, Mem (SP, 0)); Sgt (V0, T0, T1) ]

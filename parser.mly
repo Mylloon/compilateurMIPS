@@ -11,10 +11,10 @@
 %token Lend Lassign Lsc Lreturn
 %token Lbracedeb Lbracefin
 %token Lpardeb Lparfin Lcomma
-%token Ladd Lsub Lmul Ldiv Lseq Lsge Lsgt Lsle Lslt Lsne
+%token Ladd Lsub Lmul Ldiv Lrem Lseq Lsge Lsgt Lsle Lslt Lsne
 %token Lif Lelse Lwhile
 
-%left Ladd Lsub Lmul Ldiv Lseq Lsge Lsgt Lsle Lslt Lsne
+%left Ladd Lsub Lmul Ldiv Lrem Lseq Lsge Lsgt Lsle Lslt Lsne
 
 %left Lbracedeb Lparfin Lbracefin Lreturn
 %left Ltype Lbool Lint Lvar Lstr
@@ -174,6 +174,11 @@ expr:
   /* e / e */
   | a = expr ; Ldiv ; b = expr {
     Call { func = "%div" ; args = [ a ; b ] ; pos = $startpos($2) }
+  }
+
+  /* e % e */
+  | a = expr ; Lrem ; b = expr {
+    Call { func = "%rem" ; args = [ a ; b ] ; pos = $startpos($2) }
   }
 
   /* e == e */

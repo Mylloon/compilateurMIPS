@@ -1,4 +1,5 @@
-void main () {
+int main () {
     int res = 13 * -100 - 20 + 8;
     res = abs(res * 2) / 2;
+    return res % 2;
 }

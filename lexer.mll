@@ -34,6 +34,7 @@ rule token = parse
   | '-'           { Lsub }
   | '*'           { Lmul }
   | '/'           { Ldiv }
+  | '%'           { Lrem }
   | "=="          { Lseq }
   | ">="          { Lsge }
   | ">"           { Lsgt }
