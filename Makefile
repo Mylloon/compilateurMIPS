@@ -23,7 +23,7 @@ test: $(TESTS)
 	rm $(OUTPUT)
 
 clean:
-	rm -r *.cmi $(MAIN).byte _build/
+	rm -r *.cmi $(MAIN).byte _build/ *.conflicts
 
 archive:
 	tar czf "IC.tar.gz" *.ml *.mly *.mll Makefile $(TESTS_DIR)
