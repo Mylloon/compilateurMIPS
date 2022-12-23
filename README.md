@@ -37,3 +37,8 @@ $ make test
 ### Améliorations
 
 -   Fonctions de la baselib sont _inlinées_
+
+## Problèmes connus
+
+-   Pas de parenthèses pour les calculs
+-   Pas de prioriétés de calculs
