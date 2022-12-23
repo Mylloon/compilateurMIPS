@@ -30,10 +30,10 @@ let rec compile_expr env = function
         args
     in
     List.flatten ca
-    @
-    if Env.mem f Baselib.builtins
-    then Env.find f Baselib.builtins
-    else [ Jal (puf ^ f); Addi (SP, SP, 4 * List.length args) ]
+    @ (if Env.mem f Baselib.builtins
+      then Env.find f Baselib.builtins
+      else [ Jal (puf ^ f) ])
+    @ [ Addi (SP, SP, 4 * List.length args) ]
 ;;
 
 let rec compile_instr info = function
