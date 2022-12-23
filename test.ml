@@ -25,11 +25,13 @@ let debug_parser oc parsed =
   and fmt_b b = " [ " ^ String.concat "\n ; " (List.map fmt_i b) ^ "\n ]"
   and fmt_f = function
     | Syntax.Func d ->
+      let s = if List.length d.args > 0 then " " else "" in
       "Func ( "
       ^ string_of_type_t d.type_t
       ^ ", \""
       ^ d.func
-      ^ "\", [ "
+      ^ "\", ["
+      ^ s
       ^ String.concat
           ", "
           (List.map
@@ -37,7 +39,8 @@ let debug_parser oc parsed =
                match a with
                | Syntax.Arg a -> "(" ^ string_of_type_t a.type_t ^ ")" ^ a.name ^ "")
              d.args)
-      ^ " ], [\n"
+      ^ s
+      ^ "], [\n"
       ^ fmt_b d.code
       ^ "])"
   and fmt_p p = "[ " ^ String.concat "\n; " (List.map fmt_f p) ^ "\n]" in
@@ -62,10 +65,19 @@ let debug_semantics oc ast =
     | Cond (c, i, e) -> "Cond (" ^ fmt_e c ^ ", " ^ fmt_b i ^ ", " ^ fmt_b e ^ ")"
     | Loop (c, b) -> "Loop (" ^ fmt_e c ^ ", " ^ fmt_b b ^ ")"
     | Return e -> "Return (" ^ fmt_e e ^ ")"
-  and fmt_b b = "[ " ^ String.concat "\n; " (List.map fmt_i b) ^ " ]"
+  and fmt_b b = "[ " ^ String.concat "\n ; " (List.map fmt_i b) ^ "\n ]"
   and fmt_f = function
     | Func (f, args, b) ->
-      "Func ( " ^ f ^ ", [" ^ String.concat " ; " args ^ "],\n[" ^ fmt_b b ^ "])\n"
+      let s = if List.length args > 0 then " " else "" in
+      "Func ( "
+      ^ f
+      ^ ", ["
+      ^ s
+      ^ String.concat " ; " args
+      ^ s
+      ^ "], [\n"
+      ^ fmt_b b
+      ^ "])\n"
   and fmt_p p = "[ " ^ String.concat "\n; " (List.map fmt_f p) ^ "]" in
   Printf.fprintf oc "%s\n" (fmt_p ast)
 ;;
