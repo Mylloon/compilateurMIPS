@@ -30,3 +30,6 @@ archive:
 
 symlinks:
 	ln -s _build/*.cmi .
+
+menhir-debug:
+	menhir parser.mly --explain --infer

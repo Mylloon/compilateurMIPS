@@ -18,16 +18,9 @@
 %left Ladd Lsub Lmul Ldiv Lrem Lseq Lsge Lsgt Lsle Lslt Lsne
 %left Land Lor
 
-%left Lbracedeb Lparfin Lbracefin Lreturn
-%left Ltype Lbool Lint Lvar Lstr
-%left Lif Lwhile
+%type <Ast.Syntax.prog> prog
 
 %start prog
-
-%type <Ast.Syntax.block> block
-%type <Ast.Syntax.prog> prog
-%type <Ast.Syntax.args> args_ident
-%type <Ast.Syntax.expr list> args_expr
 
 %%
 
@@ -38,42 +31,19 @@ prog:
   | Lend { [] }
 
 def:
-  /* Définition fonction : type fonction (args) block */
+  /* Définition fonction : type fonction (...) block */
   | t = Ltype
   ; f = Lvar
-  ; a = args_ident
+  ; Lpardeb
+  ; a = separated_list(Lcomma, arg)
+  ; Lparfin
   ; b = block {
     [ Func { func = f ; type_t = t ; args = a ; code = b ; pos = $startpos(f) } ]
   }
 
-  /* Définition fonction : type fonction () block */
-  | t = Ltype
-  ; f = Lvar
-  ; Lpardeb
-  ; Lparfin
-  ; b = block {
-    [ Func { func = f ; type_t = t ; args = [] ; code = b ; pos = $startpos(f) } ]
-  }
-
-args_ident:
-  /* ( */
-  | Lpardeb ; s = args_ident { s }
-
-  /* type a, ... */
-  | t = Ltype ; a = arg_ident ; Lcomma ; s = args_ident { Arg { type_t = t
-                                                              ; name = a
-                                                              } :: s }
-
-  /* type c) */
-  | t = Ltype ; a = arg_ident ; Lparfin { [ Arg { type_t = t
-                                                ; name = a } ] }
-
-  /* ) */
-  | Lparfin { [] }
-
-arg_ident:
-  /* Argument */
-  | a = Lvar { a }
+arg:
+  /* type a */
+  | t = Ltype ; a = Lvar { Arg { type_t = t ; name = a } }
 
 block:
   /* { */
@@ -223,18 +193,8 @@ expr:
     Call { func = "%or" ; args = [ a ; b ] ; pos = $startpos($2) }
   }
 
-  /* function(a */
-  | f = Lvar ; Lpardeb ; a = args_expr {
+  /* function(...) */
+  | f = Lvar ; Lpardeb ; a = separated_list(Lcomma, expr) ; Lparfin {
     Call { func = f ; args = a ; pos = $startpos(a) }
   }
 ;
-
-args_expr:
-  /* a, ... */
-  | a = expr ; Lcomma ; s = args_expr { a :: s }
-
-  /* c) */
-  | a = expr ; Lparfin { [ a ] }
-
-  /* ) */
-  | Lparfin { [] }
