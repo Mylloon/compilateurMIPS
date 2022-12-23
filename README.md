@@ -41,4 +41,3 @@ $ make test
 ## Problèmes connus
 
 -   Pas de parenthèses pour les calculs
--   Pas de prioriétés de calculs
