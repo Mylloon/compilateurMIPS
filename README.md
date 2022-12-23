@@ -19,6 +19,8 @@ $ ./main.byte {fichier source} > sortie.s
 
 ### Lance les tests
 
+Certains tests doivent passer, certains non : cf. le contenu des tests.
+
 ```
 $ make test
 ```
