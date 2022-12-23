@@ -15,8 +15,9 @@
 %token Land Lor
 %token Lif Lelse Lwhile
 
-%left Ladd Lsub Lseq Lsge Lsgt Lsle Lslt Lsne Land Lor
+%left Ladd Lsub Lseq Lsge Lsgt Lsle Lslt Lsne
 %left Lmul Ldiv Lrem
+%left Land Lor
 
 %type <Ast.Syntax.prog> prog
 
