@@ -26,7 +26,7 @@ clean:
 	rm -r *.cmi $(MAIN).byte _build/ *.conflicts parser.ml parser.mli
 
 archive:
-	tar czf "IC.tar.gz" *.ml *.mly *.mll Makefile $(TESTS_DIR)
+	tar czf "IC.tar.gz" *.ml *.mly *.mll Makefile $(TESTS_DIR) README.md
 
 symlinks:
 	ln -s _build/*.cmi .
