@@ -1,6 +1,6 @@
 int add (int a, int b) {
-    # Alors que "add" est le nom d'une instruction
-    # MIPS, ça ne pose aucun problème
+    # Alors que "add" est le nom d'une instruction MIPS
+    # -> ça ne pose aucun problème
     return a + b;
 }
 
