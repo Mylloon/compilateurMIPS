@@ -27,7 +27,7 @@
 
 prog:
   /* Liste des définitions de fonction */
-  | i = def ; b = prog { i @ b }
+  | f = def ; b = prog { f @ b }
   /* Fin de programme */
   | Lend { [] }
 
@@ -43,8 +43,8 @@ def:
   }
 
 arg:
-  /* type a */
-  | t = Ltype ; a = Lvar { Arg { type_t = t ; name = a } }
+  /* type v */
+  | t = Ltype ; v = Lvar { Arg { type_t = t ; name = v } }
 
 block:
   /* { */
@@ -63,19 +63,19 @@ instr:
 
   /* return; */
   | Lreturn ; Lsc {
-    [ Return { expr = Val { value = Void ; pos = $startpos }
+    [ Return { expr = Val { value = Void ; pos = $startpos($2) }
              ; pos = $startpos } ]
     }
 
   /* type v; */
   | t = Ltype ; v = Lvar ; Lsc {
-    [ Decl { name = v ; type_t = t ; pos = $startpos(t) } ]
+    [ Decl { name = v ; type_t = t ; pos = $startpos } ]
   }
 
   /* type v = e; */
   | t = Ltype ; v = Lvar ; Lassign ; e = expr ; Lsc
-    { [ Decl { name = v ; type_t = t ; pos = $startpos(t) }
-    ; Assign { var = v ; expr = e ; pos = $startpos(v) } ]
+    { [ Decl { name = v ; type_t = t ; pos = $startpos(v) }
+    ; Assign { var = v ; expr = e ; pos = $startpos($3) } ]
     }
 
   /* v = e; */
@@ -106,27 +106,27 @@ instr:
 expr:
   /* -int */
   | Lsub ; n = Lint {
-    Val { value = Int (-n) ; pos = $startpos(n) }
+    Val { value = Int (-n) ; pos = $startpos }
   }
 
   /* int */
   | n = Lint {
-    Val { value = Int (n) ; pos = $startpos(n) }
+    Val { value = Int (n) ; pos = $startpos }
   }
 
   /* bool */
   | b = Lbool {
-    Val { value = Bool (b) ; pos = $startpos(b) }
+    Val { value = Bool (b) ; pos = $startpos }
   }
 
   /* string */
   | s = Lstr {
-    Val { value = Str (s) ; pos = $startpos(s) }
+    Val { value = Str (s) ; pos = $startpos }
   }
 
   /* Variable */
   | v = Lvar {
-    Var { name = v ; pos = $startpos(v) }
+    Var { name = v ; pos = $startpos }
   }
 
   /* e + e */
@@ -185,17 +185,17 @@ expr:
   }
 
   /* e && e */
-  | a = expr ; Land ; Land ; b = expr {
+  | a = expr ; Land ; b = expr {
     Call { func = "%and" ; args = [ a ; b ] ; pos = $startpos($2) }
   }
 
   /* e || e */
-  | a = expr ; Lor ; Lor ; b = expr {
+  | a = expr ; Lor ; b = expr {
     Call { func = "%or" ; args = [ a ; b ] ; pos = $startpos($2) }
   }
 
   /* function(...) */
   | f = Lvar ; Lpardeb ; a = separated_list(Lcomma, expr) ; Lparfin {
-    Call { func = f ; args = a ; pos = $startpos(a) }
+    Call { func = f ; args = a ; pos = $startpos }
   }
 ;

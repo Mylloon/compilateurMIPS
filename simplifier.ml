@@ -2,7 +2,7 @@ open Ast
 open Baselib
 
 let collect_constant_strings code =
-  let counter = ref (-1) in
+  let counter = ref 0 in
   let env = ref Env.empty in
   let ccs_value = function
     | V1.Void -> V2.Void, []
@@ -12,9 +12,9 @@ let collect_constant_strings code =
       (match Env.find_opt s !env with
       | Some lbl -> V2.Data lbl, [ lbl, Mips.Asciiz s ]
       | None ->
-        incr counter;
         let lbl = "str" ^ string_of_int !counter in
         env := Env.add s lbl !env;
+        incr counter;
         V2.Data lbl, [ lbl, Mips.Asciiz s ])
   in
   let rec ccs_expr = function

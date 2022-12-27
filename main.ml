@@ -16,9 +16,9 @@ let () =
     let asm = Compiler.compile (Simplifier.simplify ast) in
     Mips.emit Stdlib.stdout asm
   with
-  | LexerError c ->
+  | LexerErrorC c ->
     err (Printf.sprintf "Unrecognized char \"%c\"" c) (Lexing.lexeme_start_p buf)
-  | SyntaxError s -> err (Printf.sprintf "%s" s) (Lexing.lexeme_start_p buf)
+  | LexerErrorS s -> err (Printf.sprintf "%s" s) (Lexing.lexeme_start_p buf)
   | Parser.Error -> err "Syntax error" (Lexing.lexeme_start_p buf)
   | SemanticsError (msg, pos) -> err msg pos
 ;;

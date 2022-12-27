@@ -24,12 +24,12 @@ let rec compile_expr env = function
   | Val v -> compile_value v
   | Var v -> [ Lw (V0, Env.find v env) ]
   | Call (f, args) ->
-    let ca =
+    let compiled_args =
       List.map
         (fun a -> compile_expr env a @ [ Addi (SP, SP, -4); Sw (V0, Mem (SP, 0)) ])
         args
     in
-    List.flatten ca
+    List.flatten compiled_args
     @ (if Env.mem f Baselib.builtins
       then Env.find f Baselib.builtins
       else [ Jal (puf ^ f) ])

@@ -41,12 +41,12 @@ rule token = parse
   | "<="          { Lsle }
   | "<"           { Lslt }
   | "!="          { Lsne }
-  | '&'           { Land }
-  | '|'           { Lor }
+  | "&&"          { Land }
+  | "||"          { Lor }
   | '"'           { read_string (Buffer.create 16) lexbuf }
   | ident as i    { Lvar i }
   | '#'           { comment lexbuf }
-  | _ as c        { raise (LexerError c) }
+  | _ as c        { raise (LexerErrorC c) }
 
 and comment = parse
   | eof   { Lend }
@@ -59,5 +59,5 @@ and read_string buffer = parse
   | [^ '"' '\\']+ { Buffer.add_string buffer (Lexing.lexeme lexbuf)
                   ; read_string buffer lexbuf
                   }
-  | _ as c        { raise (LexerError c) }
-  | eof           { raise (SyntaxError "String is not terminated") }
+  | _ as c        { raise (LexerErrorC c) }
+  | eof           { raise (LexerErrorS "String is not terminated") }

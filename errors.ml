@@ -1,9 +1,9 @@
 open Ast
 open Lexing
 
-exception LexerError of char
+exception LexerErrorC of char
+exception LexerErrorS of string
 exception SemanticsError of string * Lexing.position
-exception SyntaxError of string
 
 let err msg pos =
   Printf.eprintf
